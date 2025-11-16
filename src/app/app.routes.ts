@@ -92,8 +92,22 @@ export const routes: Routes = [
 			},
 			{
 				path: 'scroll-animation',
-				loadComponent: () => import('./pages/scroll-animation/scroll-animation').then((m) => m.ScrollAnimation),
-			}
+				loadComponent: () =>
+					import('./pages/scroll-animation/scroll-animation').then(
+						(m) => m.ScrollAnimation,
+					),
+			},
+		],
+	},
+
+	{
+		path: 'chapter-03',
+		children: [
+			{ path: '', redirectTo: 'physics', pathMatch: 'full' },
+			{
+				path: 'physics',
+				loadComponent: () => import('./pages/physics/physics').then((m) => m.Physics),
+			},
 		],
 	},
 

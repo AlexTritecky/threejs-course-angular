@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import GUI from 'lil-gui';
 import gsap from 'gsap';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import * as CANNON from 'cannon-es';
 
 @Injectable({
 	providedIn: 'root',
@@ -974,12 +975,12 @@ export class DebugGuiService {
 			size: number;
 			count: number;
 			mode:
-			| 'sphereBasic'
-			| 'randomBasic'
-			| 'randomAlphaAdditive'
-			| 'randomVertexColors'
-			| 'rotatePoints'
-			| 'waveAttributes';
+				| 'sphereBasic'
+				| 'randomBasic'
+				| 'randomAlphaAdditive'
+				| 'randomVertexColors'
+				| 'rotatePoints'
+				| 'waveAttributes';
 		},
 		onModeOrCountChange: () => void,
 	): GUI {
@@ -1112,7 +1113,6 @@ export class DebugGuiService {
 		return gui;
 	}
 
-
 	createScrollAnimationGui(
 		material: THREE.MeshToonMaterial,
 		particlesMaterial: THREE.PointsMaterial,
@@ -1149,4 +1149,79 @@ export class DebugGuiService {
 		return gui;
 	}
 
+	createPhysicsGui(config: {
+		world: CANNON.World;
+		contactMaterial: CANNON.ContactMaterial;
+		onCreateSphere: () => void;
+		onCreateBox: () => void;
+		onReset: () => void;
+	}): GUI {
+		const gui = new GUI({
+			width: 280,
+			title: 'Physics debug',
+			closeFolders: false,
+		});
+
+		/**
+		 * ACTIONS: spawn / reset
+		 */
+		const actionsFolder = gui.addFolder('Actions');
+
+		const actions = {
+			createSphere: config.onCreateSphere,
+			createBox: config.onCreateBox,
+			reset: config.onReset,
+		};
+
+		actionsFolder.add(actions, 'createSphere').name('Create sphere');
+		actionsFolder.add(actions, 'createBox').name('Create box');
+		actionsFolder.add(actions, 'reset').name('Reset world');
+		actionsFolder.open();
+
+		/**
+		 * WORLD: gravity
+		 */
+		const worldFolder = gui.addFolder('World');
+
+		const worldParams = {
+			gravityY: config.world.gravity.y,
+		};
+
+		worldFolder
+			.add(worldParams, 'gravityY', -20, 0, 0.1)
+			.name('Gravity Y')
+			.onChange((value: number) => {
+				config.world.gravity.set(0, value, 0);
+			});
+
+		worldFolder.open();
+
+		/**
+		 * CONTACT MATERIAL: friction / restitution
+		 */
+		const materialFolder = gui.addFolder('Contact material');
+
+		const matParams = {
+			friction: config.contactMaterial.friction,
+			restitution: config.contactMaterial.restitution,
+		};
+
+		materialFolder
+			.add(matParams, 'friction', 0, 1, 0.01)
+			.name('Friction')
+			.onChange((value: number) => {
+				config.contactMaterial.friction = value;
+			});
+
+		materialFolder
+			.add(matParams, 'restitution', 0, 1, 0.01)
+			.name('Bounciness')
+			.onChange((value: number) => {
+				config.contactMaterial.restitution = value;
+			});
+
+		materialFolder.open();
+
+		return gui;
+	}
 }

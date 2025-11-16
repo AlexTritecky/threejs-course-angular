@@ -18,7 +18,6 @@
 	height: 100vh;
 }
 
-
 .section {
 	height: 100vh;
 	position: relative;
@@ -30,7 +29,12 @@
 	padding-block: clamp(3rem, 6vh, 5rem);
 
 	color: #ffeded;
-	font-family: 'Cabin', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+	font-family:
+		'Cabin',
+		system-ui,
+		-apple-system,
+		BlinkMacSystemFont,
+		'Segoe UI',
 		sans-serif;
 
 	&__content {
@@ -77,7 +81,6 @@
 		margin-bottom: 0.4rem;
 	}
 }
-
 
 .section:nth-of-type(odd) {
 	justify-content: flex-end;

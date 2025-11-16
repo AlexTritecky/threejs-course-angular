@@ -31,9 +31,15 @@ export const COURSE_CHAPTERS: CourseChapter[] = [
 
 	{
 		id: 'chapter-03',
-		title: 'Chapter 03 – ???',
+		title: 'Chapter 03 – Advanced techniques',
 		items: [
-			// додаси пізніше
+			{ label: 'Physics', route: '/chapter-03/physics' },
+			{ label: 'Imported models', route: '/chapter-03/imported-models' },
+			{ label: 'Raycaster & Mouse Events', route: '/chapter-03/raycaster' },
+			{ label: 'Custom models with Blender', route: '/chapter-03/blender-models' },
+			{ label: 'Environment map', route: '/chapter-03/environment-map' },
+			{ label: 'Realistic render', route: '/chapter-03/realistic-render' },
+			{ label: 'Code structuring for bigger projects', route: '/chapter-03/structuring' },
 		],
 	},
 ];
