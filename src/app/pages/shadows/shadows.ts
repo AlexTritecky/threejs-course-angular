@@ -1,11 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	OnDestroy,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui';
@@ -144,9 +137,7 @@ export class Shadows implements AfterViewInit, OnDestroy {
 		this.scene.add(this.spotLight);
 		this.scene.add(this.spotLight.target);
 
-		this.spotLightCameraHelper = new THREE.CameraHelper(
-			this.spotLight.shadow.camera,
-		);
+		this.spotLightCameraHelper = new THREE.CameraHelper(this.spotLight.shadow.camera);
 		this.spotLightCameraHelper.visible = false;
 		this.scene.add(this.spotLightCameraHelper);
 
@@ -160,9 +151,7 @@ export class Shadows implements AfterViewInit, OnDestroy {
 		this.pointLight.position.set(-1, 1, 0);
 		this.scene.add(this.pointLight);
 
-		this.pointLightCameraHelper = new THREE.CameraHelper(
-			this.pointLight.shadow.camera as any,
-		);
+		this.pointLightCameraHelper = new THREE.CameraHelper(this.pointLight.shadow.camera as any);
 		this.pointLightCameraHelper.visible = false;
 		this.scene.add(this.pointLightCameraHelper);
 
@@ -171,16 +160,10 @@ export class Shadows implements AfterViewInit, OnDestroy {
 		this.material.roughness = 0.7;
 
 		// Objects
-		this.sphere = new THREE.Mesh(
-			new THREE.SphereGeometry(0.5, 32, 32),
-			this.material,
-		);
+		this.sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), this.material);
 		this.sphere.castShadow = true;
 
-		this.plane = new THREE.Mesh(
-			new THREE.PlaneGeometry(5, 5),
-			this.material,
-		);
+		this.plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), this.material);
 		this.plane.receiveShadow = true;
 		this.plane.rotation.x = -Math.PI * 0.5;
 		this.plane.position.y = -0.5;
@@ -221,10 +204,7 @@ export class Shadows implements AfterViewInit, OnDestroy {
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 		// Controls
-		this.controls = this.threeCoreService.createOrbitControls(
-			this.camera,
-			canvas,
-		);
+		this.controls = this.threeCoreService.createOrbitControls(this.camera, canvas);
 		this.controls.enableDamping = true;
 	}
 

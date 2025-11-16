@@ -65,14 +65,13 @@ export class DebugGuiService {
 		return gui;
 	}
 
-
 	/**
-   * GUI specifically for animations:
-   * - spin speed
-   * - circular motion
-   * - orbit radius
-   * - GSAP tweens
-   */
+	 * GUI specifically for animations:
+	 * - spin speed
+	 * - circular motion
+	 * - orbit radius
+	 * - GSAP tweens
+	 */
 	createAnimationGui(
 		gui: GUI,
 		targetMesh: THREE.Mesh,
@@ -80,21 +79,15 @@ export class DebugGuiService {
 			spinSpeed: number;
 			circularMotion: boolean;
 			orbitRadius: number;
-		}
+		},
 	): GUI {
 		const animFolder = gui.addFolder('Animation');
 
-		animFolder
-			.add(animationConfig, 'spinSpeed', -5, 5, 0.1)
-			.name('Spin speed (rad/s)');
+		animFolder.add(animationConfig, 'spinSpeed', -5, 5, 0.1).name('Spin speed (rad/s)');
 
-		animFolder
-			.add(animationConfig, 'circularMotion')
-			.name('Circular motion');
+		animFolder.add(animationConfig, 'circularMotion').name('Circular motion');
 
-		animFolder
-			.add(animationConfig, 'orbitRadius', 0, 5, 0.1)
-			.name('Orbit radius');
+		animFolder.add(animationConfig, 'orbitRadius', 0, 5, 0.1).name('Orbit radius');
 
 		// GSAP tween actions
 		const gsapActions = {
@@ -116,7 +109,7 @@ export class DebugGuiService {
 					repeat: 2,
 					ease: 'bounce.out',
 				});
-			}
+			},
 		};
 
 		animFolder.add(gsapActions, 'moveX').name('GSAP: move X');
@@ -126,17 +119,13 @@ export class DebugGuiService {
 		return animFolder;
 	}
 
-
 	/**
-   * Creates a lil-gui instance for camera exploration:
-   * - field of view
-   * - position (x, y, z)
-   * - quick "look at origin" helper
-   */
-	createCameraGui(
-		camera: THREE.PerspectiveCamera,
-		controls?: OrbitControls,
-	): GUI {
+	 * Creates a lil-gui instance for camera exploration:
+	 * - field of view
+	 * - position (x, y, z)
+	 * - quick "look at origin" helper
+	 */
+	createCameraGui(camera: THREE.PerspectiveCamera, controls?: OrbitControls): GUI {
 		const gui = new GUI();
 
 		// запам’ятаємо дефолтну позицію камери (як в initThree)
@@ -208,18 +197,17 @@ export class DebugGuiService {
 		return gui;
 	}
 
-
 	/**
- * GUI for custom BufferGeometry-based meshes:
- * - color
- * - wireframe toggle
- * - triangle count + "Regenerate" button
- *
- * @param mesh - Target mesh (assumed MeshBasicMaterial).
- * @param initialTriangleCount - Initial number of triangles used for geometry.
- * @param regenerateGeometry - Callback that will be called when user hits "Regenerate".
- *                             Receives the current triangleCount from GUI.
- */
+	 * GUI for custom BufferGeometry-based meshes:
+	 * - color
+	 * - wireframe toggle
+	 * - triangle count + "Regenerate" button
+	 *
+	 * @param mesh - Target mesh (assumed MeshBasicMaterial).
+	 * @param initialTriangleCount - Initial number of triangles used for geometry.
+	 * @param regenerateGeometry - Callback that will be called when user hits "Regenerate".
+	 *                             Receives the current triangleCount from GUI.
+	 */
 	createGeometryGui(
 		mesh: THREE.Mesh,
 		initialTriangleCount: number,
@@ -231,9 +219,9 @@ export class DebugGuiService {
 		const material = mesh.material as THREE.MeshBasicMaterial;
 
 		const params = {
-			color: material.color.getStyle(),     // initial color
-			wireframe: material.wireframe,       // initial wireframe flag
-			triangleCount: initialTriangleCount,  // how many triangles to generate
+			color: material.color.getStyle(), // initial color
+			wireframe: material.wireframe, // initial wireframe flag
+			triangleCount: initialTriangleCount, // how many triangles to generate
 			regenerate: () => {
 				regenerateGeometry(params.triangleCount);
 			},
@@ -256,20 +244,15 @@ export class DebugGuiService {
 			});
 
 		// Triangle count slider
-		folder
-			.add(params, 'triangleCount', 10, 500, 10)
-			.name('Triangles');
+		folder.add(params, 'triangleCount', 10, 500, 10).name('Triangles');
 
 		// Button to regenerate geometry
-		folder
-			.add(params, 'regenerate')
-			.name('Regenerate geometry');
+		folder.add(params, 'regenerate').name('Regenerate geometry');
 
 		folder.open();
 
 		return gui;
 	}
-
 
 	/**
 	 * Creates a full-featured debug GUI for a single cube:
@@ -283,10 +266,7 @@ export class DebugGuiService {
 	 * - panel configured with width/title/closeFolders
 	 * - 'h' key toggles GUI visibility
 	 */
-	createDebugCubeGui(
-		mesh: THREE.Mesh,
-		material: THREE.MeshBasicMaterial,
-	): GUI {
+	createDebugCubeGui(mesh: THREE.Mesh, material: THREE.MeshBasicMaterial): GUI {
 		const gui = new GUI({
 			width: 300,
 			title: 'Nice debug UI',
@@ -315,12 +295,7 @@ export class DebugGuiService {
 		const cubeTweaks = gui.addFolder('Awesome cube');
 
 		// Elevation (Y position)
-		cubeTweaks
-			.add(mesh.position, 'y')
-			.min(-3)
-			.max(3)
-			.step(0.01)
-			.name('elevation');
+		cubeTweaks.add(mesh.position, 'y').min(-3).max(3).step(0.01).name('elevation');
 
 		// Visibility
 		cubeTweaks.add(mesh, 'visible');
@@ -371,7 +346,6 @@ export class DebugGuiService {
 
 		return gui;
 	}
-
 
 	/**
 	 * Creates a GUI to explore texture parameters:
@@ -441,9 +415,7 @@ export class DebugGuiService {
 					? THREE.NearestFilter
 					: THREE.LinearMipmapLinearFilter;
 			map.magFilter =
-				params.magFilter === 'Nearest'
-					? THREE.NearestFilter
-					: THREE.LinearFilter;
+				params.magFilter === 'Nearest' ? THREE.NearestFilter : THREE.LinearFilter;
 
 			map.generateMipmaps = params.minFilter !== 'Nearest';
 
@@ -456,25 +428,16 @@ export class DebugGuiService {
 
 		const folder = gui.addFolder('Textures');
 
-		folder
-			.add(params, 'currentMapKey', textureKeys)
-			.name('Active map')
-			.onChange(applySettings);
+		folder.add(params, 'currentMapKey', textureKeys).name('Active map').onChange(applySettings);
 
 		folder
 			.add(params, 'wrap', ['Clamp', 'Repeat', 'MirrorRepeat'])
 			.name('Wrap mode')
 			.onChange(applySettings);
 
-		folder
-			.add(params, 'repeatX', 0.25, 5, 0.25)
-			.name('Repeat X')
-			.onChange(applySettings);
+		folder.add(params, 'repeatX', 0.25, 5, 0.25).name('Repeat X').onChange(applySettings);
 
-		folder
-			.add(params, 'repeatY', 0.25, 5, 0.25)
-			.name('Repeat Y')
-			.onChange(applySettings);
+		folder.add(params, 'repeatY', 0.25, 5, 0.25).name('Repeat Y').onChange(applySettings);
 
 		folder
 			.add(params, 'minFilter', ['Nearest', 'Linear'])
@@ -491,16 +454,15 @@ export class DebugGuiService {
 		return gui;
 	}
 
-
 	/**
- * Creates a Materials GUI panel with:
- * - dropdown to choose material type
- * - Standard-material controls (if exists)
- * - Physical-material controls (if exists)
- *
- * @param materials Object where keys = names, values = THREE.Material instances
- * @param onMaterialChange Callback that receives selected material from dropdown
- */
+	 * Creates a Materials GUI panel with:
+	 * - dropdown to choose material type
+	 * - Standard-material controls (if exists)
+	 * - Physical-material controls (if exists)
+	 *
+	 * @param materials Object where keys = names, values = THREE.Material instances
+	 * @param onMaterialChange Callback that receives selected material from dropdown
+	 */
 	createMaterialsGui(
 		materials: Record<string, THREE.Material>,
 		onMaterialChange: (material: THREE.Material) => void,
@@ -609,7 +571,6 @@ export class DebugGuiService {
 		return gui;
 	}
 
-
 	/**
 	 * Створює GUI для роботи з 3D-текстом:
 	 * - зміна контенту тексту
@@ -648,10 +609,7 @@ export class DebugGuiService {
 		 */
 		const geoFolder = gui.addFolder('Text geometry');
 
-		geoFolder
-			.add(textConfig, 'content')
-			.name('Text')
-			.onFinishChange(rebuildCallback);
+		geoFolder.add(textConfig, 'content').name('Text').onFinishChange(rebuildCallback);
 
 		geoFolder
 			.add(textConfig, 'size', 0.1, 2, 0.01)
@@ -668,10 +626,7 @@ export class DebugGuiService {
 			.name('Curve segs')
 			.onFinishChange(rebuildCallback);
 
-		geoFolder
-			.add(textConfig, 'bevelEnabled')
-			.name('Bevel')
-			.onFinishChange(rebuildCallback);
+		geoFolder.add(textConfig, 'bevelEnabled').name('Bevel').onFinishChange(rebuildCallback);
 
 		geoFolder
 			.add(textConfig, 'bevelThickness', 0, 0.2, 0.005)
@@ -693,9 +648,7 @@ export class DebugGuiService {
 			.name('Donuts count')
 			.onFinishChange(rebuildCallback);
 
-		geoFolder
-			.add({ rebuild: rebuildCallback }, 'rebuild')
-			.name('Rebuild now');
+		geoFolder.add({ rebuild: rebuildCallback }, 'rebuild').name('Rebuild now');
 
 		geoFolder.open();
 
@@ -705,19 +658,14 @@ export class DebugGuiService {
 		 */
 		const rotFolder = gui.addFolder('Rotation');
 
-		rotFolder
-			.add(textConfig, 'autoRotate')
-			.name('Auto-rotate group');
+		rotFolder.add(textConfig, 'autoRotate').name('Auto-rotate group');
 
-		rotFolder
-			.add(textConfig, 'rotationSpeed', -2, 2, 0.01)
-			.name('Speed (rad/s)');
+		rotFolder.add(textConfig, 'rotationSpeed', -2, 2, 0.01).name('Speed (rad/s)');
 
 		rotFolder.open();
 
 		return gui;
 	}
-
 
 	createLightsGui(lights: {
 		ambientLight: THREE.AmbientLight;
@@ -843,19 +791,14 @@ export class DebugGuiService {
 		helpers
 			.add(flags, 'directional')
 			.onChange((v: boolean) => (lights.helpers.directional.visible = v));
-		helpers
-			.add(flags, 'point')
-			.onChange((v: boolean) => (lights.helpers.point.visible = v));
-		helpers
-			.add(flags, 'spot')
-			.onChange((v: boolean) => (lights.helpers.spot.visible = v));
+		helpers.add(flags, 'point').onChange((v: boolean) => (lights.helpers.point.visible = v));
+		helpers.add(flags, 'spot').onChange((v: boolean) => (lights.helpers.spot.visible = v));
 		helpers
 			.add(flags, 'rectArea')
 			.onChange((v: boolean) => (lights.helpers.rectArea.visible = v));
 
 		return gui;
 	}
-
 
 	createShadowsGui(params: {
 		renderer: THREE.WebGLRenderer;
@@ -904,38 +847,24 @@ export class DebugGuiService {
 		// AMBIENT LIGHT
 		// -------------------------
 		const ambientFolder = gui.addFolder('Ambient light');
-		ambientFolder
-			.add(ambientLight, 'intensity', 0, 3, 0.001)
-			.name('Intensity');
+		ambientFolder.add(ambientLight, 'intensity', 0, 3, 0.001).name('Intensity');
 		ambientFolder.open();
 
 		// -------------------------
 		// DIRECTIONAL LIGHT
 		// -------------------------
 		const dirFolder = gui.addFolder('Directional light');
-		dirFolder
-			.add(directionalLight, 'intensity', 0, 3, 0.001)
-			.name('Intensity');
-		dirFolder
-			.add(directionalLight.position, 'x', -5, 5, 0.001)
-			.name('Pos X');
-		dirFolder
-			.add(directionalLight.position, 'y', -5, 5, 0.001)
-			.name('Pos Y');
-		dirFolder
-			.add(directionalLight.position, 'z', -5, 5, 0.001)
-			.name('Pos Z');
+		dirFolder.add(directionalLight, 'intensity', 0, 3, 0.001).name('Intensity');
+		dirFolder.add(directionalLight.position, 'x', -5, 5, 0.001).name('Pos X');
+		dirFolder.add(directionalLight.position, 'y', -5, 5, 0.001).name('Pos Y');
+		dirFolder.add(directionalLight.position, 'z', -5, 5, 0.001).name('Pos Z');
 
 		// -------------------------
 		// MATERIAL
 		// -------------------------
 		const matFolder = gui.addFolder('Material');
-		matFolder
-			.add(material, 'metalness', 0, 1, 0.001)
-			.name('Metalness');
-		matFolder
-			.add(material, 'roughness', 0, 1, 0.001)
-			.name('Roughness');
+		matFolder.add(material, 'metalness', 0, 1, 0.001).name('Metalness');
+		matFolder.add(material, 'roughness', 0, 1, 0.001).name('Roughness');
 
 		// -------------------------
 		// REAL vs FAKE SHADOWS
@@ -988,7 +917,6 @@ export class DebugGuiService {
 		return gui;
 	}
 
-
 	createHauntedHouseGui(config: {
 		ambientLight: THREE.AmbientLight;
 		directionalLight: THREE.DirectionalLight;
@@ -1004,37 +932,23 @@ export class DebugGuiService {
 		 * Ambient light folder
 		 */
 		const ambientFolder = gui.addFolder('Ambient light');
-		ambientFolder
-			.add(config.ambientLight, 'intensity', 0, 2, 0.001)
-			.name('Intensity');
+		ambientFolder.add(config.ambientLight, 'intensity', 0, 2, 0.001).name('Intensity');
 
 		/**
 		 * Directional light folder
 		 */
 		const dirFolder = gui.addFolder('Directional light');
-		dirFolder
-			.add(config.directionalLight, 'intensity', 0, 2, 0.001)
-			.name('Intensity');
-		dirFolder
-			.add(config.directionalLight.position, 'x', -10, 10, 0.1)
-			.name('Pos X');
-		dirFolder
-			.add(config.directionalLight.position, 'y', -10, 10, 0.1)
-			.name('Pos Y');
-		dirFolder
-			.add(config.directionalLight.position, 'z', -10, 10, 0.1)
-			.name('Pos Z');
+		dirFolder.add(config.directionalLight, 'intensity', 0, 2, 0.001).name('Intensity');
+		dirFolder.add(config.directionalLight.position, 'x', -10, 10, 0.1).name('Pos X');
+		dirFolder.add(config.directionalLight.position, 'y', -10, 10, 0.1).name('Pos Y');
+		dirFolder.add(config.directionalLight.position, 'z', -10, 10, 0.1).name('Pos Z');
 
 		/**
 		 * Floor displacement folder
 		 */
 		const floorFolder = gui.addFolder('Floor displacement');
-		floorFolder
-			.add(config.floorMaterial, 'displacementScale', 0, 1, 0.001)
-			.name('Scale');
-		floorFolder
-			.add(config.floorMaterial, 'displacementBias', -1, 1, 0.001)
-			.name('Bias');
+		floorFolder.add(config.floorMaterial, 'displacementScale', 0, 1, 0.001).name('Scale');
+		floorFolder.add(config.floorMaterial, 'displacementBias', -1, 1, 0.001).name('Bias');
 
 		ambientFolder.open();
 		dirFolder.open();
@@ -1043,15 +957,14 @@ export class DebugGuiService {
 		return gui;
 	}
 
-
 	/**
- * GUI для партиклів:
- * - колір (material.color)
- * - розмір (material.size)
- *
- * @param material - PointsMaterial партиклів
- * @param config - обʼєкт параметрів, які буде змінювати GUI
- */
+	 * GUI для партиклів:
+	 * - колір (material.color)
+	 * - розмір (material.size)
+	 *
+	 * @param material - PointsMaterial партиклів
+	 * @param config - обʼєкт параметрів, які буде змінювати GUI
+	 */
 	// DebugGuiService
 
 	createParticlesGui(
@@ -1060,12 +973,13 @@ export class DebugGuiService {
 			color: string;
 			size: number;
 			count: number;
-			mode: 'sphereBasic'
-			| 'randomBasic'
-			| 'randomAlphaAdditive'
-			| 'randomVertexColors'
-			| 'rotatePoints'
-			| 'waveAttributes';
+			mode:
+				| 'sphereBasic'
+				| 'randomBasic'
+				| 'randomAlphaAdditive'
+				| 'randomVertexColors'
+				| 'rotatePoints'
+				| 'waveAttributes';
 		},
 		onModeOrCountChange: () => void,
 	): GUI {
@@ -1106,12 +1020,12 @@ export class DebugGuiService {
 		// Режим прикладу з уроку
 		folder
 			.add(config, 'mode', [
-				'sphereBasic',          // сфера з партиклів
-				'randomBasic',          // рандомні без текстур
-				'randomAlphaAdditive',  // alphaMap + Additive + depthWrite=false
-				'randomVertexColors',   // vertexColors
-				'rotatePoints',         // обертання Points
-				'waveAttributes',       // хвиля через атрибути
+				'sphereBasic', // сфера з партиклів
+				'randomBasic', // рандомні без текстур
+				'randomAlphaAdditive', // alphaMap + Additive + depthWrite=false
+				'randomVertexColors', // vertexColors
+				'rotatePoints', // обертання Points
+				'waveAttributes', // хвиля через атрибути
 			])
 			.name('Example')
 			.onChange(() => {
@@ -1123,5 +1037,78 @@ export class DebugGuiService {
 		return gui;
 	}
 
+	createGalaxyGui(
+		params: {
+			count: number;
+			size: number;
+			radius: number;
+			branches: number;
+			spin: number;
+			randomness: number;
+			randomnessPower: number;
+			insideColor: string;
+			outsideColor: string;
+		},
+		onUpdate: () => void,
+	): GUI {
+		const gui = new GUI({
+			width: 320,
+			title: 'Galaxy Debug',
+			closeFolders: false,
+		});
 
+		const folder = gui.addFolder('Galaxy parameters');
+
+		folder
+			.add(params, 'count')
+			.min(100)
+			.max(1_000_000)
+			.step(100)
+			.name('Star count')
+			.onFinishChange(onUpdate);
+
+		folder
+			.add(params, 'size')
+			.min(0.001)
+			.max(0.1)
+			.step(0.001)
+			.name('Star size')
+			.onFinishChange(onUpdate);
+
+		folder
+			.add(params, 'radius')
+			.min(0.01)
+			.max(20)
+			.step(0.01)
+			.name('Radius')
+			.onFinishChange(onUpdate);
+
+		folder.add(params, 'branches').min(2).max(20).step(1).name('Arms').onFinishChange(onUpdate);
+
+		folder.add(params, 'spin').min(-5).max(5).step(0.001).name('Spin').onFinishChange(onUpdate);
+
+		folder
+			.add(params, 'randomness')
+			.min(0)
+			.max(2)
+			.step(0.001)
+			.name('Randomness')
+			.onFinishChange(onUpdate);
+
+		folder
+			.add(params, 'randomnessPower')
+			.min(1)
+			.max(10)
+			.step(0.001)
+			.name('Randomness power')
+			.onFinishChange(onUpdate);
+
+		folder.addColor(params, 'insideColor').name('Core color').onFinishChange(onUpdate);
+
+		folder.addColor(params, 'outsideColor').name('Outer color').onFinishChange(onUpdate);
+
+		folder.open();
+
+		return gui;
+	}
 }

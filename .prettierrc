@@ -1,11 +1,12 @@
 {
-  "singleQuote": true,
-  "trailingComma": "es5",
-  "bracketSpacing": true,
-  "useTabs": true,
-  "tabWidth": 4,
-  "semi": true,
-  "proseWrap": "preserve",
-  "quoteProps": "preserve",
-  "parser": "typescript"
+	"singleQuote": true,
+	"trailingComma": "es5",
+	"bracketSpacing": true,
+	"useTabs": true,
+	"tabWidth": 4,
+	"semi": true,
+	"proseWrap": "preserve",
+	"quoteProps": "preserve",
+	"parser": "typescript",
+	"printWidth": 140
 }

@@ -1,11 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	OnDestroy,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui';
@@ -113,9 +106,7 @@ export class Textures implements AfterViewInit, OnDestroy {
 		 * Base color-like textures
 		 */
 		const minecraft = textureLoader.load('/textures/minecraft.png');
-		const checker1024 = textureLoader.load(
-			'/textures/checkerboard-1024x1024.png',
-		);
+		const checker1024 = textureLoader.load('/textures/checkerboard-1024x1024.png');
 		const checker2 = textureLoader.load('/textures/checkerboard-2x2.png');
 
 		/**
@@ -195,10 +186,7 @@ export class Textures implements AfterViewInit, OnDestroy {
 		this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 		/** OrbitControls */
-		this.controls = this.threeCoreService.createOrbitControls(
-			this.camera,
-			canvas,
-		);
+		this.controls = this.threeCoreService.createOrbitControls(this.camera, canvas);
 		this.controls.enableDamping = true;
 	}
 
@@ -210,10 +198,7 @@ export class Textures implements AfterViewInit, OnDestroy {
 	 * - switch between Nearest/Linear filters
 	 */
 	private initGui(): void {
-		this.gui = this.debugGuiService.createTexturesGui(
-			this.mesh.material,
-			this.textures,
-		);
+		this.gui = this.debugGuiService.createTexturesGui(this.mesh.material, this.textures);
 	}
 
 	/**

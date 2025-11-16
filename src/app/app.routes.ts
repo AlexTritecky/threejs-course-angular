@@ -28,51 +28,32 @@ export const routes: Routes = [
 			{
 				path: 'animations',
 				loadComponent: () =>
-					import('./pages/animations/animations').then(
-						(m) => m.Animations,
-					),
+					import('./pages/animations/animations').then((m) => m.Animations),
 			},
 			{
 				path: 'cameras',
-				loadComponent: () =>
-					import('./pages/cameras/cameras').then(
-						(m) => m.Cameras,
-					),
+				loadComponent: () => import('./pages/cameras/cameras').then((m) => m.Cameras),
 			},
 			{
 				path: 'geometries',
 				loadComponent: () =>
-					import('./pages/geometries/geometries').then(
-						(m) => m.Geometries,
-					),
+					import('./pages/geometries/geometries').then((m) => m.Geometries),
 			},
 			{
 				path: 'debug-ui',
-				loadComponent: () =>
-					import('./pages/debug-ui/debug-ui').then(
-						(m) => m.DebugUi,
-					),
+				loadComponent: () => import('./pages/debug-ui/debug-ui').then((m) => m.DebugUi),
 			},
 			{
 				path: 'textures',
-				loadComponent: () =>
-					import('./pages/textures/textures').then(
-						(m) => m.Textures,
-					),
+				loadComponent: () => import('./pages/textures/textures').then((m) => m.Textures),
 			},
 			{
 				path: 'materials',
-				loadComponent: () =>
-					import('./pages/materials/materials').then(
-						(m) => m.Materials,
-					),
+				loadComponent: () => import('./pages/materials/materials').then((m) => m.Materials),
 			},
 			{
 				path: 'text',
-				loadComponent: () =>
-					import('./pages/text/text').then(
-						(m) => m.Text,
-					),
+				loadComponent: () => import('./pages/text/text').then((m) => m.Text),
 			},
 		],
 	},
@@ -90,32 +71,25 @@ export const routes: Routes = [
 			},
 			{
 				path: 'lights',
-				loadComponent: () =>
-					import('./pages/lights/lights').then(
-						(m) => m.Lights,
-					),
+				loadComponent: () => import('./pages/lights/lights').then((m) => m.Lights),
 			},
 			{
 				path: 'shadows',
-				loadComponent: () =>
-					import('./pages/shadows/shadows').then(
-						(m) => m.Shadows,
-					),
+				loadComponent: () => import('./pages/shadows/shadows').then((m) => m.Shadows),
 			},
 			{
 				path: 'haunted-house',
 				loadComponent: () =>
-					import('./pages/haunted-house/haunted-house').then(
-						(m) => m.HauntedHouse,
-					),
+					import('./pages/haunted-house/haunted-house').then((m) => m.HauntedHouse),
 			},
 			{
 				path: 'particles',
-				loadComponent: () =>
-					import('./pages/particles/particles').then(
-						(m) => m.Particles,
-					),
-			}
+				loadComponent: () => import('./pages/particles/particles').then((m) => m.Particles),
+			},
+			{
+				path: 'galaxy',
+				loadComponent: () => import('./pages/galaxy/galaxy').then((m) => m.Galaxy),
+			},
 		],
 	},
 

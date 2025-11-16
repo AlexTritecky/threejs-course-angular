@@ -1,11 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	OnDestroy,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui';
@@ -117,10 +110,7 @@ export class DebugUi implements AfterViewInit, OnDestroy {
 	 * plus global GUI configuration (width/title/closeFolders and 'h' toggle).
 	 */
 	private initGui(): void {
-		this.gui = this.debugGui.createDebugCubeGui(
-			this.cube,
-			this.cubeMaterial,
-		);
+		this.gui = this.debugGui.createDebugCubeGui(this.cube, this.cubeMaterial);
 	}
 
 	/**

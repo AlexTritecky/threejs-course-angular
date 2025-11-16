@@ -2,12 +2,16 @@
 
 /* Material Theme (M3) */
 html {
-	@include mat.theme((color: (primary: mat.$cyan-palette,
+	@include mat.theme(
+		(
+			color: (
+				primary: mat.$cyan-palette,
 				tertiary: mat.$orange-palette,
 			),
 			typography: Roboto,
 			density: 0,
-		));
+		)
+	);
 }
 
 /* System variables */
@@ -27,7 +31,7 @@ body {
 	background-color: var(--mat-sys-surface);
 	color: var(--mat-sys-on-surface);
 	font: var(--mat-sys-body-medium);
-	font-family: Roboto, "Helvetica Neue", sans-serif;
+	font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 /* -------------------------------------------------- */
@@ -53,7 +57,7 @@ body {
 	}
 }
 
-.mat-expansion-panel.mat-expanded>.mat-expansion-panel-header {
+.mat-expansion-panel.mat-expanded > .mat-expansion-panel-header {
 	background-color: color-mix(in srgb, var(--mat-sys-primary) 22%, transparent);
 
 	.mat-expansion-panel-header-title {
@@ -61,7 +65,7 @@ body {
 	}
 }
 
-.mat-expansion-panel.mat-expanded>.mat-expansion-panel-header:hover {
+.mat-expansion-panel.mat-expanded > .mat-expansion-panel-header:hover {
 	background-color: color-mix(in srgb, var(--mat-sys-primary) 28%, transparent);
 }
 
@@ -102,7 +106,6 @@ body {
 	color: var(--mat-sys-primary) !important;
 	font-weight: 600;
 }
-
 
 :host {
 	display: block;

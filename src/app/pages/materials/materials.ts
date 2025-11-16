@@ -1,11 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	OnDestroy,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
@@ -104,12 +97,8 @@ export class Materials implements AfterViewInit, OnDestroy {
 		);
 		const doorHeightTexture = textureLoader.load('/textures/door/height.jpg');
 		const doorNormalTexture = textureLoader.load('/textures/door/normal.jpg');
-		const doorMetalnessTexture = textureLoader.load(
-			'/textures/door/metalness.jpg',
-		);
-		const doorRoughnessTexture = textureLoader.load(
-			'/textures/door/roughness.jpg',
-		);
+		const doorMetalnessTexture = textureLoader.load('/textures/door/metalness.jpg');
+		const doorRoughnessTexture = textureLoader.load('/textures/door/roughness.jpg');
 
 		const matcapTexture = textureLoader.load('/textures/matcaps/8.png');
 		const gradientTexture = textureLoader.load('/textures/gradients/5.jpg');
@@ -231,10 +220,7 @@ export class Materials implements AfterViewInit, OnDestroy {
 		this.renderer.toneMappingExposure = 1.0;
 
 		/** OrbitControls */
-		this.controls = this.threeCoreService.createOrbitControls(
-			this.camera,
-			canvas,
-		);
+		this.controls = this.threeCoreService.createOrbitControls(this.camera, canvas);
 		this.controls.enableDamping = true;
 	}
 
@@ -244,9 +230,8 @@ export class Materials implements AfterViewInit, OnDestroy {
 	 * - basic tweaks for Standard and Physical materials
 	 */
 	private initGui(): void {
-		this.gui = this.debugGuiService.createMaterialsGui(
-			this.materials,
-			(selectedMat) => this.applyMaterial(selectedMat),
+		this.gui = this.debugGuiService.createMaterialsGui(this.materials, (selectedMat) =>
+			this.applyMaterial(selectedMat),
 		);
 	}
 

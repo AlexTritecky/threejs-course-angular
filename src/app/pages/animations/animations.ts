@@ -1,11 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	OnDestroy,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui';
@@ -49,9 +42,9 @@ export class Animations implements AfterViewInit, OnDestroy {
 	 * Values are modified through the Debug GUI in real time.
 	 */
 	private animationConfig = {
-		spinSpeed: 1,          // Cube rotation speed (radians per second)
+		spinSpeed: 1, // Cube rotation speed (radians per second)
 		circularMotion: false, // Enables orbit-like X/Y movement
-		orbitRadius: 1.25,     // Radius of circular motion
+		orbitRadius: 1.25, // Radius of circular motion
 	};
 
 	ngAfterViewInit(): void {
@@ -134,11 +127,7 @@ export class Animations implements AfterViewInit, OnDestroy {
 		);
 
 		// Animation-specific controls (spin speed, orbit radius, GSAP actions)
-		this.debugGuiService.createAnimationGui(
-			this.gui,
-			this.cube,
-			this.animationConfig,
-		);
+		this.debugGuiService.createAnimationGui(this.gui, this.cube, this.animationConfig);
 	}
 
 	/**

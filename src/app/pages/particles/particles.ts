@@ -1,11 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	OnDestroy,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui';
@@ -69,11 +62,11 @@ export class Particles implements AfterViewInit, OnDestroy {
 		count: number;
 		mode: ParticlesMode;
 	} = {
-			color: '#ff88cc',
-			size: 0.1,
-			count: 5000,
-			mode: 'randomAlphaAdditive',
-		};
+		color: '#ff88cc',
+		size: 0.1,
+		count: 5000,
+		mode: 'randomAlphaAdditive',
+	};
 
 	/** Render loop helpers */
 	private clock = new THREE.Clock();
@@ -200,7 +193,11 @@ export class Particles implements AfterViewInit, OnDestroy {
 			geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
 			/** Modes that require per-vertex colors */
-			if (mode === 'randomVertexColors' || mode === 'rotatePoints' || mode === 'waveAttributes') {
+			if (
+				mode === 'randomVertexColors' ||
+				mode === 'rotatePoints' ||
+				mode === 'waveAttributes'
+			) {
 				geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 			}
 		}
@@ -251,10 +248,8 @@ export class Particles implements AfterViewInit, OnDestroy {
 	 * Allows changing mode, count, size, color in real time.
 	 */
 	private initGui(): void {
-		this.gui = this.debugGui.createParticlesGui(
-			this.particlesMaterial,
-			this.parameters,
-			() => this.rebuildParticles(),
+		this.gui = this.debugGui.createParticlesGui(this.particlesMaterial, this.parameters, () =>
+			this.rebuildParticles(),
 		);
 	}
 
@@ -295,8 +290,9 @@ export class Particles implements AfterViewInit, OnDestroy {
 		// Mode: per-vertex sine-wave animation
 		else if (mode === 'waveAttributes') {
 			const count = this.parameters.count;
-			const positionAttr =
-				this.particlesGeometry.attributes['position'] as THREE.BufferAttribute;
+			const positionAttr = this.particlesGeometry.attributes[
+				'position'
+			] as THREE.BufferAttribute;
 
 			for (let i = 0; i < count; i++) {
 				const i3 = i * 3;

@@ -1,11 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	OnDestroy,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Sky } from 'three/addons/objects/Sky.js';
@@ -190,9 +183,7 @@ export class HauntedHouse implements AfterViewInit, OnDestroy {
 		// Door
 		const doorColorTexture = textureLoader.load('/door/color.webp');
 		const doorAlphaTexture = textureLoader.load('/door/alpha.webp');
-		const doorAmbientOcclusionTexture = textureLoader.load(
-			'/door/ambientOcclusion.webp',
-		);
+		const doorAmbientOcclusionTexture = textureLoader.load('/door/ambientOcclusion.webp');
 		const doorHeightTexture = textureLoader.load('/door/height.webp');
 		const doorNormalTexture = textureLoader.load('/door/normal.webp');
 		const doorMetalnessTexture = textureLoader.load('/door/metalness.webp');
@@ -448,10 +439,7 @@ export class HauntedHouse implements AfterViewInit, OnDestroy {
 		/**
 		 * Controls via ThreeCoreService
 		 */
-		this.controls = this.threeCoreService.createOrbitControls(
-			this.camera,
-			canvas,
-		);
+		this.controls = this.threeCoreService.createOrbitControls(this.camera, canvas);
 
 		/**
 		 * GUI через DebugGuiService
@@ -478,25 +466,19 @@ export class HauntedHouse implements AfterViewInit, OnDestroy {
 			this.ghost1.position.x = Math.cos(ghost1Angle) * 4;
 			this.ghost1.position.z = Math.sin(ghost1Angle) * 4;
 			this.ghost1.position.y =
-				Math.sin(ghost1Angle) *
-				Math.sin(ghost1Angle * 2.34) *
-				Math.sin(ghost1Angle * 3.45);
+				Math.sin(ghost1Angle) * Math.sin(ghost1Angle * 2.34) * Math.sin(ghost1Angle * 3.45);
 
 			const ghost2Angle = -elapsedTime * 0.38;
 			this.ghost2.position.x = Math.cos(ghost2Angle) * 5;
 			this.ghost2.position.z = Math.sin(ghost2Angle) * 5;
 			this.ghost2.position.y =
-				Math.sin(ghost2Angle) *
-				Math.sin(ghost2Angle * 2.34) *
-				Math.sin(ghost2Angle * 3.45);
+				Math.sin(ghost2Angle) * Math.sin(ghost2Angle * 2.34) * Math.sin(ghost2Angle * 3.45);
 
 			const ghost3Angle = elapsedTime * 0.23;
 			this.ghost3.position.x = Math.cos(ghost3Angle) * 6;
 			this.ghost3.position.z = Math.sin(ghost3Angle) * 6;
 			this.ghost3.position.y =
-				Math.sin(ghost3Angle) *
-				Math.sin(ghost3Angle * 2.34) *
-				Math.sin(ghost3Angle * 3.45);
+				Math.sin(ghost3Angle) * Math.sin(ghost3Angle * 2.34) * Math.sin(ghost3Angle * 3.45);
 
 			this.controls.update();
 			this.renderer.render(this.scene, this.camera);

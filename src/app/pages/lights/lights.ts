@@ -1,11 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	OnDestroy,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
@@ -77,7 +70,7 @@ export class Lights implements AfterViewInit, OnDestroy {
 
 		this.controls?.dispose();
 		this.renderer?.dispose();
-		this.gui?.destroy();   // ⬅️ достатньо
+		this.gui?.destroy(); // ⬅️ достатньо
 
 		// опційно: dispose геометрій/матеріалів, якщо захочеш
 	}
@@ -122,14 +115,7 @@ export class Lights implements AfterViewInit, OnDestroy {
 		this.rectAreaLight.lookAt(0, 0, 0);
 		this.scene.add(this.rectAreaLight);
 
-		this.spotLight = new THREE.SpotLight(
-			0x78ff00,
-			4.5,
-			10,
-			Math.PI * 0.1,
-			0.25,
-			1,
-		);
+		this.spotLight = new THREE.SpotLight(0x78ff00, 4.5, 10, Math.PI * 0.1, 0.25, 1);
 		this.spotLight.position.set(0, 2, 3);
 		this.spotLight.target.position.set(-0.75, 0, 0);
 		this.scene.add(this.spotLight);
@@ -151,21 +137,12 @@ export class Lights implements AfterViewInit, OnDestroy {
 		this.mat = new THREE.MeshStandardMaterial();
 		this.mat.roughness = 0.4;
 
-		this.sphere = new THREE.Mesh(
-			new THREE.SphereGeometry(0.5, 32, 32),
-			this.mat,
-		);
+		this.sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), this.mat);
 		this.sphere.position.x = -1.5;
 
-		this.cube = new THREE.Mesh(
-			new THREE.BoxGeometry(0.75, 0.75, 0.75),
-			this.mat,
-		);
+		this.cube = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.75, 0.75), this.mat);
 
-		this.torus = new THREE.Mesh(
-			new THREE.TorusGeometry(0.3, 0.2, 32, 64),
-			this.mat,
-		);
+		this.torus = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.2, 32, 64), this.mat);
 		this.torus.position.x = 1.5;
 
 		this.plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), this.mat);

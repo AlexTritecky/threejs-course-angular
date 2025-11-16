@@ -10,19 +10,26 @@ import { CourseChapter } from './models/course-chapter.model';
 
 @Component({
 	selector: 'app-root',
-	imports: [RouterOutlet, RouterLink, RouterLinkActive, MatToolbarModule, MatButtonModule, MatSidenavModule, MatListModule, MatExpansionModule],
+	imports: [
+		RouterOutlet,
+		RouterLink,
+		RouterLinkActive,
+		MatToolbarModule,
+		MatButtonModule,
+		MatSidenavModule,
+		MatListModule,
+		MatExpansionModule,
+	],
 	templateUrl: './app.html',
-	styleUrl: './app.scss'
+	styleUrl: './app.scss',
 })
 export class App {
-
 	private readonly router = inject(Router);
 
 	readonly chapters = COURSE_CHAPTERS;
 
-
 	isChapterActive(chapter: CourseChapter): boolean {
 		const url = this.router.url;
-		return chapter.items.some(item => url.startsWith(item.route));
+		return chapter.items.some((item) => url.startsWith(item.route));
 	}
 }

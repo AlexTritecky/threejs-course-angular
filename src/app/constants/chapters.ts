@@ -1,4 +1,4 @@
-import { CourseChapter } from "../models/course-chapter.model";
+import { CourseChapter } from '../models/course-chapter.model';
 
 export const COURSE_CHAPTERS: CourseChapter[] = [
 	{
@@ -37,4 +37,3 @@ export const COURSE_CHAPTERS: CourseChapter[] = [
 		],
 	},
 ];
-

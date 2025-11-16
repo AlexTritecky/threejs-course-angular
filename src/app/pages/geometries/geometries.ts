@@ -1,11 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	OnDestroy,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild } from '@angular/core';
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -130,10 +123,7 @@ export class Geometries implements AfterViewInit, OnDestroy {
 			positions[i] = (Math.random() - 0.5) * 4;
 		}
 
-		geometry.setAttribute(
-			'position',
-			new THREE.BufferAttribute(positions, 3),
-		);
+		geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
 		return geometry;
 	}

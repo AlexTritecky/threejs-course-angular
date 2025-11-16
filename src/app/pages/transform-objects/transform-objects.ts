@@ -1,11 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	OnDestroy,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui';
@@ -108,10 +101,7 @@ export class TransformObjects implements AfterViewInit, OnDestroy {
 		this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 		/** Add orbit controls (mouse rotation, zoom, pan) via service */
-		this.controls = this.threeCoreService.createOrbitControls(
-			this.camera,
-			canvas,
-		);
+		this.controls = this.threeCoreService.createOrbitControls(this.camera, canvas);
 	}
 
 	/**

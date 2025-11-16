@@ -1,11 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	OnDestroy,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, viewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { FontLoader, Font } from 'three/examples/jsm/loaders/FontLoader.js';
@@ -122,10 +115,7 @@ export class Text implements AfterViewInit, OnDestroy {
 		this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 		// Orbit controls
-		this.controls = this.threeCoreService.createOrbitControls(
-			this.camera,
-			canvas,
-		);
+		this.controls = this.threeCoreService.createOrbitControls(this.camera, canvas);
 		this.controls.enableDamping = true;
 
 		// Matcap texture + material
@@ -224,9 +214,8 @@ export class Text implements AfterViewInit, OnDestroy {
 	 * Every change can optionally trigger "rebuildTextAndDonuts".
 	 */
 	private initGui(): void {
-		this.gui = this.debugGuiService.createTextGui(
-			this.textConfig,
-			() => this.rebuildTextAndDonuts(),
+		this.gui = this.debugGuiService.createTextGui(this.textConfig, () =>
+			this.rebuildTextAndDonuts(),
 		);
 	}
 

@@ -7,22 +7,26 @@
 		<mat-sidenav #sidenav mode="over" class="app-sidenav">
 			<mat-accordion [multi]="false" class="chapter-accordion">
 				@for (chapter of chapters; track chapter.id) {
-				<mat-expansion-panel [expanded]="isChapterActive(chapter)">
-					<mat-expansion-panel-header>
-						<mat-panel-title>
-							{{ chapter.title }}
-						</mat-panel-title>
-					</mat-expansion-panel-header>
+					<mat-expansion-panel [expanded]="isChapterActive(chapter)">
+						<mat-expansion-panel-header>
+							<mat-panel-title>
+								{{ chapter.title }}
+							</mat-panel-title>
+						</mat-expansion-panel-header>
 
-					<mat-nav-list>
-						@for (item of chapter.items; track item.route) {
-						<a mat-list-item [routerLink]="item.route" routerLinkActive="active-link"
-							(click)="sidenav.close()">
-							{{ item.label }}
-						</a>
-						}
-					</mat-nav-list>
-				</mat-expansion-panel>
+						<mat-nav-list>
+							@for (item of chapter.items; track item.route) {
+								<a
+									mat-list-item
+									[routerLink]="item.route"
+									routerLinkActive="active-link"
+									(click)="sidenav.close()"
+								>
+									{{ item.label }}
+								</a>
+							}
+						</mat-nav-list>
+					</mat-expansion-panel>
 				}
 			</mat-accordion>
 		</mat-sidenav>

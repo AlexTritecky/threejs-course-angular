@@ -7,7 +7,6 @@ import { ViewportSize } from '../models/view.model';
 	providedIn: 'root',
 })
 export class ThreeCoreService {
-
 	/**
 	 * Creates and returns a new Three.js Scene.
 	 * The scene acts as the root container for all 3D objects.
@@ -23,10 +22,7 @@ export class ThreeCoreService {
 	 * @param fov - Field of view in degrees.
 	 * @param sizes - Viewport width and height.
 	 */
-	createPerspectiveCamera(
-		fov: number,
-		sizes: ViewportSize,
-	): THREE.PerspectiveCamera {
+	createPerspectiveCamera(fov: number, sizes: ViewportSize): THREE.PerspectiveCamera {
 		return new THREE.PerspectiveCamera(fov, sizes.width / sizes.height);
 	}
 
@@ -37,10 +33,7 @@ export class ThreeCoreService {
 	 * @param canvas - The canvas where WebGL will draw.
 	 * @param sizes - Width and height for the renderer.
 	 */
-	createRenderer(
-		canvas: HTMLCanvasElement,
-		sizes: ViewportSize,
-	): THREE.WebGLRenderer {
+	createRenderer(canvas: HTMLCanvasElement, sizes: ViewportSize): THREE.WebGLRenderer {
 		try {
 			const renderer = new THREE.WebGLRenderer({ canvas });
 
@@ -64,10 +57,7 @@ export class ThreeCoreService {
 	 * @param camera - Camera to control.
 	 * @param canvas - Canvas used for mouse / touch interaction.
 	 */
-	createOrbitControls(
-		camera: THREE.PerspectiveCamera,
-		canvas: HTMLCanvasElement,
-	): OrbitControls {
+	createOrbitControls(camera: THREE.PerspectiveCamera, canvas: HTMLCanvasElement): OrbitControls {
 		const controls = new OrbitControls(camera, canvas);
 		controls.enableDamping = true;
 		return controls;
