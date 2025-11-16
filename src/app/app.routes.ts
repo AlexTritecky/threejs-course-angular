@@ -7,11 +7,12 @@ import { DebugUi } from './pages/debug-ui/debug-ui';
 import { Textures } from './pages/textures/textures';
 import { Materials } from './pages/materials/materials';
 import { Text } from './pages/text/text';
+import { Lights } from './pages/lights/lights';
 
 export const routes: Routes = [
 	{
 		path: '',
-		redirectTo: 'chapter-01/debug-ui',
+		redirectTo: 'chapter-01/transform',
 		pathMatch: 'full'
 	},
 	{
@@ -45,5 +46,9 @@ export const routes: Routes = [
 	{
 		path: 'chapter-01/text',
 		component: Text
+	},
+	{
+		path: 'chapter-02/lights',
+		component: Lights
 	}
 ];

@@ -5,7 +5,7 @@
 
 	<mat-sidenav-container class="app-sidenav-container">
 		<mat-sidenav #sidenav mode="over" class="app-sidenav">
-			<mat-accordion [multi]="true" class="chapter-accordion">
+			<mat-accordion [multi]="false" class="chapter-accordion">
 				@for (chapter of chapters; track chapter.id) {
 				<mat-expansion-panel [expanded]="isChapterActive(chapter)">
 					<mat-expansion-panel-header>

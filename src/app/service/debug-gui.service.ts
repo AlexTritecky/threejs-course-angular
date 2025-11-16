@@ -717,4 +717,144 @@ export class DebugGuiService {
 
 		return gui;
 	}
+
+
+
+	createLightsGui(lights: {
+		ambientLight: THREE.AmbientLight;
+		directionalLight: THREE.DirectionalLight;
+		hemisphereLight: THREE.HemisphereLight;
+		pointLight: THREE.PointLight;
+		rectAreaLight: THREE.RectAreaLight;
+		spotLight: THREE.SpotLight;
+		helpers: {
+			hemisphere: THREE.HemisphereLightHelper;
+			directional: THREE.DirectionalLightHelper;
+			point: THREE.PointLightHelper;
+			spot: THREE.SpotLightHelper;
+			rectArea: any; // RectAreaLightHelper
+		};
+	}): GUI {
+		const gui = new GUI({ width: 340, title: 'Lights Debug' });
+
+		// -------------------------
+		// AMBIENT
+		// -------------------------
+		const ambient = gui.addFolder('Ambient');
+		ambient.addColor(lights.ambientLight, 'color');
+		ambient.add(lights.ambientLight, 'intensity', 0, 3, 0.001);
+
+		// -------------------------
+		// DIRECTIONAL
+		// -------------------------
+		const dir = gui.addFolder('Directional');
+		dir.add(lights.directionalLight, 'intensity', 0, 3, 0.001);
+		dir.addColor(lights.directionalLight, 'color');
+		dir.add(lights.directionalLight.position, 'x', -5, 5);
+		dir.add(lights.directionalLight.position, 'y', -5, 5);
+		dir.add(lights.directionalLight.position, 'z', -5, 5);
+
+		// -------------------------
+		// HEMISPHERE
+		// -------------------------
+		const hemi = gui.addFolder('Hemisphere');
+		hemi.addColor(lights.hemisphereLight, 'color').name('Sky color');
+		hemi.addColor(lights.hemisphereLight, 'groundColor').name('Ground color');
+		hemi.add(lights.hemisphereLight, 'intensity', 0, 3, 0.001);
+
+		// -------------------------
+		// POINT
+		// -------------------------
+		const point = gui.addFolder('Point Light');
+		point.addColor(lights.pointLight, 'color');
+		point.add(lights.pointLight, 'intensity', 0, 10, 0.01);
+		point.add(lights.pointLight, 'distance', 0, 20, 0.1);
+		point.add(lights.pointLight, 'decay', 0, 5, 0.01);
+		point.add(lights.pointLight.position, 'x', -5, 5);
+		point.add(lights.pointLight.position, 'y', -5, 5);
+		point.add(lights.pointLight.position, 'z', -5, 5);
+
+		// -------------------------
+		// RECT AREA
+		// -------------------------
+		const rect = gui.addFolder('Rect Area');
+		rect.addColor(lights.rectAreaLight, 'color');
+		rect.add(lights.rectAreaLight, 'intensity', 0, 50, 0.1);
+		rect.add(lights.rectAreaLight, 'width', 0.1, 5, 0.1);
+		rect.add(lights.rectAreaLight, 'height', 0.1, 5, 0.1);
+		rect.add(lights.rectAreaLight.position, 'x', -5, 5);
+		rect.add(lights.rectAreaLight.position, 'y', -5, 5);
+		rect.add(lights.rectAreaLight.position, 'z', -5, 5);
+
+		// -------------------------
+		// SPOT LIGHT
+		// -------------------------
+		const spot = gui.addFolder('Spotlight');
+		spot.addColor(lights.spotLight, 'color');
+		const spotIntensity = spot.add(lights.spotLight, 'intensity', 0, 20, 0.1);
+		const spotDistance = spot.add(lights.spotLight, 'distance', 0, 30, 0.1);
+		const spotAngle = spot.add(lights.spotLight, 'angle', 0, Math.PI / 2, 0.001);
+		const spotPenumbra = spot.add(lights.spotLight, 'penumbra', 0, 1, 0.01);
+		const spotDecay = spot.add(lights.spotLight, 'decay', 0, 5, 0.01);
+
+		const spotPosX = spot.add(lights.spotLight.position, 'x', -5, 5);
+		const spotPosY = spot.add(lights.spotLight.position, 'y', -5, 5);
+		const spotPosZ = spot.add(lights.spotLight.position, 'z', -5, 5);
+
+		// TARGET
+		const spotTarget = spot.addFolder('Spot Target');
+		const targetX = spotTarget.add(lights.spotLight.target.position, 'x', -5, 5);
+		const targetY = spotTarget.add(lights.spotLight.target.position, 'y', -5, 5);
+		const targetZ = spotTarget.add(lights.spotLight.target.position, 'z', -5, 5);
+
+		// helper updater for any spotlight-related controller
+		const updateSpotHelper = () => {
+			lights.helpers.spot.update();
+		};
+
+		[
+			spotIntensity,
+			spotDistance,
+			spotAngle,
+			spotPenumbra,
+			spotDecay,
+			spotPosX,
+			spotPosY,
+			spotPosZ,
+			targetX,
+			targetY,
+			targetZ,
+		].forEach((ctrl) => ctrl.onChange(updateSpotHelper));
+
+		// -------------------------
+		// HELPERS TOGGLE
+		// -------------------------
+		const helpers = gui.addFolder('Helpers visibility');
+		const flags = {
+			hemisphere: true,
+			directional: true,
+			point: true,
+			spot: true,
+			rectArea: true,
+		};
+
+		helpers
+			.add(flags, 'hemisphere')
+			.onChange((v: boolean) => (lights.helpers.hemisphere.visible = v));
+		helpers
+			.add(flags, 'directional')
+			.onChange((v: boolean) => (lights.helpers.directional.visible = v));
+		helpers
+			.add(flags, 'point')
+			.onChange((v: boolean) => (lights.helpers.point.visible = v));
+		helpers
+			.add(flags, 'spot')
+			.onChange((v: boolean) => (lights.helpers.spot.visible = v));
+		helpers
+			.add(flags, 'rectArea')
+			.onChange((v: boolean) => (lights.helpers.rectArea.visible = v));
+
+		return gui;
+	}
+
 }

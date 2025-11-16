@@ -18,9 +18,14 @@ export const COURSE_CHAPTERS: CourseChapter[] = [
 
 	{
 		id: 'chapter-02',
-		title: 'Chapter 02 – ???',
+		title: 'Chapter 02 – Classic techniques',
 		items: [
-			// додаси пізніше
+			{ label: 'Lights', route: '/chapter-02/lights' },
+			{ label: 'Shadows', route: '/chapter-02/shadows' },
+			{ label: 'Haunted House', route: '/chapter-02/haunted-house' },
+			{ label: 'Particles', route: '/chapter-02/particles' },
+			{ label: 'Galaxy Generator', route: '/chapter-02/galaxy' },
+			{ label: 'Scroll Based Animation', route: '/chapter-02/scroll-animation' },
 		],
 	},
 
