@@ -1,54 +1,112 @@
 import { Routes } from '@angular/router';
-import { TransformObjects } from './pages/transform-objects/transform-objects';
-import { Animations } from './pages/animations/animations';
-import { Cameras } from './pages/cameras/cameras';
-import { Geometries } from './pages/geometries/geometries';
-import { DebugUi } from './pages/debug-ui/debug-ui';
-import { Textures } from './pages/textures/textures';
-import { Materials } from './pages/materials/materials';
-import { Text } from './pages/text/text';
-import { Lights } from './pages/lights/lights';
 
 export const routes: Routes = [
 	{
 		path: '',
 		redirectTo: 'chapter-01/transform',
-		pathMatch: 'full'
+		pathMatch: 'full',
 	},
+
+	/**
+	 * Chapter 01 – Basics
+	 */
 	{
-		path: 'chapter-01/transform',
-		component: TransformObjects
+		path: 'chapter-01',
+		children: [
+			{
+				path: '',
+				redirectTo: 'transform',
+				pathMatch: 'full',
+			},
+			{
+				path: 'transform',
+				loadComponent: () =>
+					import('./pages/transform-objects/transform-objects').then(
+						(m) => m.TransformObjects,
+					),
+			},
+			{
+				path: 'animations',
+				loadComponent: () =>
+					import('./pages/animations/animations').then(
+						(m) => m.Animations,
+					),
+			},
+			{
+				path: 'cameras',
+				loadComponent: () =>
+					import('./pages/cameras/cameras').then(
+						(m) => m.Cameras,
+					),
+			},
+			{
+				path: 'geometries',
+				loadComponent: () =>
+					import('./pages/geometries/geometries').then(
+						(m) => m.Geometries,
+					),
+			},
+			{
+				path: 'debug-ui',
+				loadComponent: () =>
+					import('./pages/debug-ui/debug-ui').then(
+						(m) => m.DebugUi,
+					),
+			},
+			{
+				path: 'textures',
+				loadComponent: () =>
+					import('./pages/textures/textures').then(
+						(m) => m.Textures,
+					),
+			},
+			{
+				path: 'materials',
+				loadComponent: () =>
+					import('./pages/materials/materials').then(
+						(m) => m.Materials,
+					),
+			},
+			{
+				path: 'text',
+				loadComponent: () =>
+					import('./pages/text/text').then(
+						(m) => m.Text,
+					),
+			},
+		],
 	},
+
+	/**
+	 * Chapter 02 – Lighting
+	 */
 	{
-		path: 'chapter-01/animations',
-		component: Animations
+		path: 'chapter-02',
+		children: [
+			{
+				path: '',
+				redirectTo: 'lights',
+				pathMatch: 'full',
+			},
+			{
+				path: 'lights',
+				loadComponent: () =>
+					import('./pages/lights/lights').then(
+						(m) => m.Lights,
+					),
+			},
+			{
+				path: 'shadows',
+				loadComponent: () =>
+					import('./pages/shadows/shadows').then(
+						(m) => m.Shadows,
+					),
+			},
+		],
 	},
+
 	{
-		path: 'chapter-01/cameras',
-		component: Cameras
+		path: '**',
+		redirectTo: 'chapter-01/transform',
 	},
-	{
-		path: 'chapter-01/geometries',
-		component: Geometries
-	},
-	{
-		path: 'chapter-01/debug-ui',
-		component: DebugUi
-	},
-	{
-		path: 'chapter-01/textures',
-		component: Textures
-	},
-	{
-		path: 'chapter-01/materials',
-		component: Materials
-	},
-	{
-		path: 'chapter-01/text',
-		component: Text
-	},
-	{
-		path: 'chapter-02/lights',
-		component: Lights
-	}
 ];

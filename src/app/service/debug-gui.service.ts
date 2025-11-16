@@ -719,7 +719,6 @@ export class DebugGuiService {
 	}
 
 
-
 	createLightsGui(lights: {
 		ambientLight: THREE.AmbientLight;
 		directionalLight: THREE.DirectionalLight;
@@ -853,6 +852,138 @@ export class DebugGuiService {
 		helpers
 			.add(flags, 'rectArea')
 			.onChange((v: boolean) => (lights.helpers.rectArea.visible = v));
+
+		return gui;
+	}
+
+
+	createShadowsGui(params: {
+		renderer: THREE.WebGLRenderer;
+		ambientLight: THREE.AmbientLight;
+		directionalLight: THREE.DirectionalLight;
+		spotLight: THREE.SpotLight;
+		pointLight: THREE.PointLight;
+		material: THREE.MeshStandardMaterial;
+		sphere: THREE.Mesh;
+		plane: THREE.Mesh;
+		sphereShadow: THREE.Mesh;
+		helpers: {
+			directional: THREE.CameraHelper;
+			spot: THREE.CameraHelper;
+			point: THREE.CameraHelper;
+		};
+	}): GUI {
+		const {
+			renderer,
+			ambientLight,
+			directionalLight,
+			spotLight,
+			pointLight,
+			material,
+			sphere,
+			plane,
+			sphereShadow,
+			helpers,
+		} = params;
+
+		const gui = new GUI({
+			width: 340,
+			title: 'Shadows debug',
+			closeFolders: false,
+		});
+
+		// Local debug flags (not exposed outside)
+		const debugConfig = {
+			useRealShadows: false,
+			showDirectionalHelper: false,
+			showSpotHelper: false,
+			showPointHelper: false,
+		};
+
+		// -------------------------
+		// AMBIENT LIGHT
+		// -------------------------
+		const ambientFolder = gui.addFolder('Ambient light');
+		ambientFolder
+			.add(ambientLight, 'intensity', 0, 3, 0.001)
+			.name('Intensity');
+		ambientFolder.open();
+
+		// -------------------------
+		// DIRECTIONAL LIGHT
+		// -------------------------
+		const dirFolder = gui.addFolder('Directional light');
+		dirFolder
+			.add(directionalLight, 'intensity', 0, 3, 0.001)
+			.name('Intensity');
+		dirFolder
+			.add(directionalLight.position, 'x', -5, 5, 0.001)
+			.name('Pos X');
+		dirFolder
+			.add(directionalLight.position, 'y', -5, 5, 0.001)
+			.name('Pos Y');
+		dirFolder
+			.add(directionalLight.position, 'z', -5, 5, 0.001)
+			.name('Pos Z');
+
+		// -------------------------
+		// MATERIAL
+		// -------------------------
+		const matFolder = gui.addFolder('Material');
+		matFolder
+			.add(material, 'metalness', 0, 1, 0.001)
+			.name('Metalness');
+		matFolder
+			.add(material, 'roughness', 0, 1, 0.001)
+			.name('Roughness');
+
+		// -------------------------
+		// REAL vs FAKE SHADOWS
+		// -------------------------
+		const shadowsFolder = gui.addFolder('Shadows mode');
+		shadowsFolder
+			.add(debugConfig, 'useRealShadows')
+			.name('Use real shadows')
+			.onChange((enabled: boolean) => {
+				// Enable/disable real shadow maps on renderer
+				renderer.shadowMap.enabled = enabled;
+
+				// Fake blob shadow plane visibility
+				sphereShadow.visible = !enabled;
+
+				// Cast/receive flags
+				sphere.castShadow = enabled;
+				plane.receiveShadow = enabled;
+
+				directionalLight.castShadow = enabled;
+				spotLight.castShadow = enabled;
+				pointLight.castShadow = enabled;
+			});
+
+		// -------------------------
+		// HELPERS VISIBILITY
+		// -------------------------
+		const helpersFolder = gui.addFolder('Shadow camera helpers');
+		helpersFolder
+			.add(debugConfig, 'showDirectionalHelper')
+			.name('Directional')
+			.onChange((v: boolean) => {
+				helpers.directional.visible = v;
+			});
+
+		helpersFolder
+			.add(debugConfig, 'showSpotHelper')
+			.name('Spot')
+			.onChange((v: boolean) => {
+				helpers.spot.visible = v;
+			});
+
+		helpersFolder
+			.add(debugConfig, 'showPointHelper')
+			.name('Point')
+			.onChange((v: boolean) => {
+				helpers.point.visible = v;
+			});
 
 		return gui;
 	}
