@@ -269,4 +269,106 @@ export class DebugGuiService {
 
 		return gui;
 	}
+
+
+	/**
+	 * Creates a full-featured debug GUI for a single cube:
+	 * - "Awesome cube" folder with:
+	 *   - elevation (position.y)
+	 *   - visible
+	 *   - wireframe
+	 *   - color
+	 *   - spin() GSAP animation
+	 *   - subdivision (regenerates BoxGeometry with new segments)
+	 * - panel configured with width/title/closeFolders
+	 * - 'h' key toggles GUI visibility
+	 */
+	createDebugCubeGui(
+		mesh: THREE.Mesh,
+		material: THREE.MeshBasicMaterial,
+	): GUI {
+		const gui = new GUI({
+			width: 300,
+			title: 'Nice debug UI',
+			closeFolders: false,
+		});
+
+		// Parameters object used only for GUI-bound values and actions
+		const debugObject: {
+			color: string;
+			spin: () => void;
+			subdivision: number;
+		} = {
+			color: '#a778d8',
+			spin: () => {
+				gsap.to(mesh.rotation, {
+					duration: 1,
+					y: mesh.rotation.y + Math.PI * 2,
+				});
+			},
+			subdivision: 2,
+		};
+
+		// Ensure material starts with the same color as the GUI
+		material.color.set(debugObject.color);
+
+		const cubeTweaks = gui.addFolder('Awesome cube');
+
+		// Elevation (Y position)
+		cubeTweaks
+			.add(mesh.position, 'y')
+			.min(-3)
+			.max(3)
+			.step(0.01)
+			.name('elevation');
+
+		// Visibility
+		cubeTweaks.add(mesh, 'visible');
+
+		// Wireframe toggle
+		cubeTweaks.add(material, 'wireframe');
+
+		// Color picker (syncs back into material.color)
+		cubeTweaks
+			.addColor(debugObject, 'color')
+			.name('color')
+			.onChange(() => {
+				material.color.set(debugObject.color);
+			});
+
+		// Spin action (GSAP)
+		cubeTweaks.add(debugObject, 'spin').name('spin');
+
+		// Subdivision — rebuilds BoxGeometry with new segments
+		cubeTweaks
+			.add(debugObject, 'subdivision')
+			.min(1)
+			.max(20)
+			.step(1)
+			.name('subdivision')
+			.onFinishChange(() => {
+				mesh.geometry.dispose();
+				mesh.geometry = new THREE.BoxGeometry(
+					1,
+					1,
+					1,
+					debugObject.subdivision,
+					debugObject.subdivision,
+					debugObject.subdivision,
+				);
+			});
+
+		cubeTweaks.open();
+
+		// Optional: toggle GUI with 'h' key (hide/show)
+		window.addEventListener('keydown', (event: KeyboardEvent) => {
+			if (event.key === 'h') {
+				// lil-gui stores hidden state in a private property _hidden
+				const anyGui = gui as any;
+				gui.show(anyGui._hidden);
+			}
+		});
+
+		return gui;
+	}
 }

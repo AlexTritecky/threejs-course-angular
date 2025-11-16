@@ -3,11 +3,12 @@ import { TransformObjects } from './pages/transform-objects/transform-objects';
 import { Animations } from './pages/animations/animations';
 import { Cameras } from './pages/cameras/cameras';
 import { Geometries } from './pages/geometries/geometries';
+import { DebugUi } from './pages/debug-ui/debug-ui';
 
 export const routes: Routes = [
 	{
 		path: '',
-		redirectTo: 'chapter-01/geometries',
+		redirectTo: 'chapter-01/debug-ui',
 		pathMatch: 'full'
 	},
 	{
@@ -25,5 +26,9 @@ export const routes: Routes = [
 	{
 		path: 'chapter-01/geometries',
 		component: Geometries
+	},
+	{
+		path: 'chapter-01/debug-ui',
+		component: DebugUi
 	}
 ];
