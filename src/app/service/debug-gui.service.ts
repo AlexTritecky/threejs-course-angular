@@ -490,4 +490,122 @@ export class DebugGuiService {
 
 		return gui;
 	}
+
+
+	/**
+ * Creates a Materials GUI panel with:
+ * - dropdown to choose material type
+ * - Standard-material controls (if exists)
+ * - Physical-material controls (if exists)
+ *
+ * @param materials Object where keys = names, values = THREE.Material instances
+ * @param onMaterialChange Callback that receives selected material from dropdown
+ */
+	createMaterialsGui(
+		materials: Record<string, THREE.Material>,
+		onMaterialChange: (material: THREE.Material) => void,
+	): GUI {
+		const gui = new GUI({
+			width: 320,
+			title: 'Materials Debug',
+			closeFolders: false,
+		});
+
+		const materialKeys = Object.keys(materials);
+
+		if (!materialKeys.length) {
+			console.warn('DebugGuiService.createMaterialsGui: no materials provided.');
+			return gui;
+		}
+
+		const params = {
+			current: materialKeys[0], // default=first material
+		};
+
+		/** Apply material to scene */
+		const applyMaterial = () => {
+			const mat = materials[params.current];
+			if (!mat) return;
+
+			onMaterialChange(mat);
+		};
+
+		// Initial apply
+		applyMaterial();
+
+		/** MAIN FOLDER */
+		const mainFolder = gui.addFolder('Material type');
+		mainFolder
+			.add(params, 'current', materialKeys)
+			.name('Active material')
+			.onChange(applyMaterial);
+		mainFolder.open();
+
+		/**
+		 * Helper for adding GUI controls by checking property existence
+		 */
+		const addIfProp = (
+			folder: GUI,
+			material: any,
+			prop: string,
+			min: number,
+			max: number,
+			step = 0.0001,
+		) => {
+			if (material[prop] !== undefined) {
+				folder.add(material, prop).min(min).max(max).step(step);
+			}
+		};
+
+		/**
+		 * STANDARD MATERIAL TWEAKS
+		 */
+		const standardMat = Object.values(materials).find(
+			(m) => m instanceof THREE.MeshStandardMaterial,
+		) as THREE.MeshStandardMaterial | undefined;
+
+		if (standardMat) {
+			const f = gui.addFolder('Standard Material (PBR)');
+			addIfProp(f, standardMat, 'metalness', 0, 1);
+			addIfProp(f, standardMat, 'roughness', 0, 1);
+			addIfProp(f, standardMat, 'displacementScale', 0, 0.5, 0.001);
+			addIfProp(f, standardMat, 'aoMapIntensity', 0, 5, 0.01);
+
+			// Normal scale
+			if (standardMat.normalScale instanceof THREE.Vector2) {
+				f.add(standardMat.normalScale, 'x', 0, 1, 0.01).name('normalScale.x');
+				f.add(standardMat.normalScale, 'y', 0, 1, 0.01).name('normalScale.y');
+			}
+
+			f.open();
+		}
+
+		/**
+		 * PHYSICAL MATERIAL TWEAKS
+		 */
+		const physicalMat = Object.values(materials).find(
+			(m) => m instanceof THREE.MeshPhysicalMaterial,
+		) as THREE.MeshPhysicalMaterial | undefined;
+
+		if (physicalMat) {
+			const f = gui.addFolder('Physical Material (Glass-like)');
+			addIfProp(f, physicalMat, 'metalness', 0, 1);
+			addIfProp(f, physicalMat, 'roughness', 0, 1);
+
+			// Transmission
+			addIfProp(f, physicalMat, 'transmission', 0, 1);
+			addIfProp(f, physicalMat, 'ior', 1, 10);
+			addIfProp(f, physicalMat, 'thickness', 0, 5, 0.001);
+
+			// Optional advanced features:
+			addIfProp(f, physicalMat, 'clearcoat', 0, 1);
+			addIfProp(f, physicalMat, 'clearcoatRoughness', 0, 1);
+			addIfProp(f, physicalMat, 'sheen', 0, 1);
+			f.addColor(physicalMat, 'sheenColor');
+
+			f.open();
+		}
+
+		return gui;
+	}
 }
