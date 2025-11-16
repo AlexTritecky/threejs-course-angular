@@ -29,14 +29,16 @@
 
 .app-content {
 	height: 100%;
+	overflow: hidden;
 }
 
 .main {
 	height: 100%;
+	overflow: hidden;
 }
 
 .content {
-	padding: 16px;
+	padding: 0px;
 }
 
 .mat-divider {
