@@ -207,4 +207,66 @@ export class DebugGuiService {
 
 		return gui;
 	}
+
+
+	/**
+ * GUI for custom BufferGeometry-based meshes:
+ * - color
+ * - wireframe toggle
+ * - triangle count + "Regenerate" button
+ *
+ * @param mesh - Target mesh (assumed MeshBasicMaterial).
+ * @param initialTriangleCount - Initial number of triangles used for geometry.
+ * @param regenerateGeometry - Callback that will be called when user hits "Regenerate".
+ *                             Receives the current triangleCount from GUI.
+ */
+	createGeometryGui(
+		mesh: THREE.Mesh,
+		initialTriangleCount: number,
+		regenerateGeometry: (triangleCount: number) => void,
+	): GUI {
+		const gui = new GUI();
+		const folder = gui.addFolder('Geometry');
+
+		const material = mesh.material as THREE.MeshBasicMaterial;
+
+		const params = {
+			color: material.color.getStyle(),     // initial color
+			wireframe: material.wireframe,       // initial wireframe flag
+			triangleCount: initialTriangleCount,  // how many triangles to generate
+			regenerate: () => {
+				regenerateGeometry(params.triangleCount);
+			},
+		};
+
+		// Color picker
+		folder
+			.addColor(params, 'color')
+			.name('Color')
+			.onChange((value: string) => {
+				material.color.setStyle(value);
+			});
+
+		// Wireframe toggle
+		folder
+			.add(params, 'wireframe')
+			.name('Wireframe')
+			.onChange((value: boolean) => {
+				material.wireframe = value;
+			});
+
+		// Triangle count slider
+		folder
+			.add(params, 'triangleCount', 10, 500, 10)
+			.name('Triangles');
+
+		// Button to regenerate geometry
+		folder
+			.add(params, 'regenerate')
+			.name('Regenerate geometry');
+
+		folder.open();
+
+		return gui;
+	}
 }

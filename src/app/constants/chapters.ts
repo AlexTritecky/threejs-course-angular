@@ -8,7 +8,6 @@ export const COURSE_CHAPTERS: CourseChapter[] = [
 			{ label: 'Transform objects', route: '/chapter-01/transform' },
 			{ label: 'Animations', route: '/chapter-01/animations' },
 			{ label: 'Cameras', route: '/chapter-01/cameras' },
-			{ label: 'Fullscreen and resizing', route: '/chapter-01/fullscreen-resize' },
 			{ label: 'Geometries', route: '/chapter-01/geometries' },
 			{ label: 'Debug UI', route: '/chapter-01/debug-ui' },
 			{ label: 'Textures', route: '/chapter-01/textures' },
