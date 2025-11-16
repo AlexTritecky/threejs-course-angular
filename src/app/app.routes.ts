@@ -90,6 +90,10 @@ export const routes: Routes = [
 				path: 'galaxy',
 				loadComponent: () => import('./pages/galaxy/galaxy').then((m) => m.Galaxy),
 			},
+			{
+				path: 'scroll-animation',
+				loadComponent: () => import('./pages/scroll-animation/scroll-animation').then((m) => m.ScrollAnimation),
+			}
 		],
 	},
 

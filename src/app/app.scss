@@ -6,6 +6,11 @@
 
 .app-toolbar {
 	flex: 0 0 auto;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 1000;
 	border-bottom: 1px solid color-mix(in srgb, var(--mat-sys-primary) 60%, transparent);
 }
 
@@ -28,16 +33,18 @@
 
 .app-content {
 	height: 100%;
-	overflow: hidden;
+	overflow: scroll;
+	position: relative;
 }
 
 .main {
 	height: 100%;
-	overflow: hidden;
+	// overflow: hidden;
 }
 
 .content {
 	padding: 0px;
+	min-height: 100%;
 }
 
 .mat-divider {

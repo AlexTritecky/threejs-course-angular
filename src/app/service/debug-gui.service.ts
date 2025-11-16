@@ -974,12 +974,12 @@ export class DebugGuiService {
 			size: number;
 			count: number;
 			mode:
-				| 'sphereBasic'
-				| 'randomBasic'
-				| 'randomAlphaAdditive'
-				| 'randomVertexColors'
-				| 'rotatePoints'
-				| 'waveAttributes';
+			| 'sphereBasic'
+			| 'randomBasic'
+			| 'randomAlphaAdditive'
+			| 'randomVertexColors'
+			| 'rotatePoints'
+			| 'waveAttributes';
 		},
 		onModeOrCountChange: () => void,
 	): GUI {
@@ -1111,4 +1111,42 @@ export class DebugGuiService {
 
 		return gui;
 	}
+
+
+	createScrollAnimationGui(
+		material: THREE.MeshToonMaterial,
+		particlesMaterial: THREE.PointsMaterial,
+		params: { materialColor: string; particlesSize: number },
+	): GUI {
+		const gui = new GUI({
+			width: 260,
+			title: 'Scroll BG Debug',
+			closeFolders: false,
+		});
+
+		const folder = gui.addFolder('Look & feel');
+
+		folder
+			.addColor(params, 'materialColor')
+			.name('Accent color')
+			.onChange((value: string) => {
+				material.color.set(value);
+				particlesMaterial.color.set(value);
+				material.needsUpdate = true;
+				particlesMaterial.needsUpdate = true;
+			});
+
+		folder
+			.add(params, 'particlesSize', 0.005, 0.2, 0.005)
+			.name('Particles size')
+			.onChange((value: number) => {
+				particlesMaterial.size = value;
+				particlesMaterial.needsUpdate = true;
+			});
+
+		folder.open();
+
+		return gui;
+	}
+
 }

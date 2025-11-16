@@ -1,0 +1,84 @@
+:host {
+	display: block;
+}
+
+/* Можеш винести в глобальні стилі, якщо треба */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.webgl {
+	position: fixed;
+	top: 0;
+	left: 0;
+	outline: none;
+	width: 100vw;
+	height: 100vh;
+}
+
+
+.section {
+	height: 100vh;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+
+	padding-inline: clamp(3rem, 9vw, 8rem);
+	padding-block: clamp(3rem, 6vh, 5rem);
+
+	color: #ffeded;
+	font-family: 'Cabin', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+		sans-serif;
+
+	&__content {
+		max-width: 680px;
+		display: flex;
+		flex-direction: column;
+		gap: 1.1rem;
+	}
+
+	h1,
+	h2 {
+		text-transform: uppercase;
+	}
+
+	h1 {
+		font-size: 40px;
+		margin-bottom: 0.4rem;
+	}
+
+	h2 {
+		font-size: clamp(2rem, 3vw, 2.4rem);
+		margin-bottom: 0.25rem;
+	}
+
+	p {
+		font-size: 1rem;
+		line-height: 1.7;
+		color: #d6d6dc;
+	}
+
+	.subtitle {
+		margin-top: 0.15rem;
+		font-size: 0.98rem;
+		color: #f0dde0;
+		opacity: 0.9;
+	}
+
+	.eyebrow {
+		text-transform: uppercase;
+		letter-spacing: 0.16em;
+		font-size: 0.78rem;
+		color: #ffeded;
+		opacity: 0.8;
+		margin-bottom: 0.4rem;
+	}
+}
+
+
+.section:nth-of-type(odd) {
+	justify-content: flex-end;
+}
