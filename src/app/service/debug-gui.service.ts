@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
 import GUI from 'lil-gui';
+import gsap from 'gsap';
 
 @Injectable({
 	providedIn: 'root',
@@ -61,5 +62,66 @@ export class DebugGuiService {
 		groupFolder.open();
 
 		return gui;
+	}
+
+
+	/**
+   * GUI specifically for animations:
+   * - spin speed
+   * - circular motion
+   * - orbit radius
+   * - GSAP tweens
+   */
+	createAnimationGui(
+		gui: GUI,
+		targetMesh: THREE.Mesh,
+		animationConfig: {
+			spinSpeed: number;
+			circularMotion: boolean;
+			orbitRadius: number;
+		}
+	): GUI {
+		const animFolder = gui.addFolder('Animation');
+
+		animFolder
+			.add(animationConfig, 'spinSpeed', -5, 5, 0.1)
+			.name('Spin speed (rad/s)');
+
+		animFolder
+			.add(animationConfig, 'circularMotion')
+			.name('Circular motion');
+
+		animFolder
+			.add(animationConfig, 'orbitRadius', 0, 5, 0.1)
+			.name('Orbit radius');
+
+		// GSAP tween actions
+		const gsapActions = {
+			moveX: () => {
+				gsap.to(targetMesh.position, {
+					duration: 1,
+					delay: 0.3,
+					x: 2,
+					yoyo: true,
+					repeat: 1,
+					ease: 'power2.inOut',
+				});
+			},
+			bounceY: () => {
+				gsap.to(targetMesh.position, {
+					duration: 0.8,
+					y: 1.5,
+					yoyo: true,
+					repeat: 2,
+					ease: 'bounce.out',
+				});
+			}
+		};
+
+		animFolder.add(gsapActions, 'moveX').name('GSAP: move X');
+		animFolder.add(gsapActions, 'bounceY').name('GSAP: bounce Y');
+		animFolder.open();
+
+		return animFolder;
 	}
 }
