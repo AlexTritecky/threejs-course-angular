@@ -5,29 +5,32 @@
 
 	<mat-sidenav-container class="app-sidenav-container">
 		<mat-sidenav #sidenav mode="over" class="app-sidenav">
-			<mat-nav-list>
-
-				<!-- ГЛАВИ -->
+			<mat-accordion [multi]="true" class="chapter-accordion">
 				@for (chapter of chapters; track chapter.id) {
+				<mat-expansion-panel [expanded]="isChapterActive(chapter)">
+					<mat-expansion-panel-header>
+						<mat-panel-title>
+							{{ chapter.title }}
+						</mat-panel-title>
+					</mat-expansion-panel-header>
 
-				<h3 class="chapter-title">{{ chapter.title }}</h3>
-
-				<!-- ПУНКТИ ГЛАВИ -->
-				@for (item of chapter.items; track item.route) {
-				<a mat-list-item [routerLink]="item.route" routerLinkActive="active-link" (click)="sidenav.close()">
-					{{ item.label }}
-				</a>
+					<mat-nav-list>
+						@for (item of chapter.items; track item.route) {
+						<a mat-list-item [routerLink]="item.route" routerLinkActive="active-link"
+							(click)="sidenav.close()">
+							{{ item.label }}
+						</a>
+						}
+					</mat-nav-list>
+				</mat-expansion-panel>
 				}
-
-				<mat-divider></mat-divider>
-				}
-			</mat-nav-list>
+			</mat-accordion>
 		</mat-sidenav>
 
 		<mat-sidenav-content class="app-content">
 			<main class="main">
 				<div class="content">
-					<router-outlet />
+					<router-outlet></router-outlet>
 				</div>
 			</main>
 		</mat-sidenav-content>

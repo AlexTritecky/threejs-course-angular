@@ -1,6 +1,5 @@
 import { CourseChapter } from "../models/course-chapter.model";
 
-
 export const COURSE_CHAPTERS: CourseChapter[] = [
 	{
 		id: 'chapter-01',
@@ -16,22 +15,23 @@ export const COURSE_CHAPTERS: CourseChapter[] = [
 			{ label: '10. Textures', route: '/chapter-01/textures' },
 			{ label: '11. Materials', route: '/chapter-01/materials' },
 			{ label: '12. 3D Text', route: '/chapter-01/text' },
-		]
+		],
 	},
 
 	{
 		id: 'chapter-02',
-		title: 'Chapter 02 – Advanced Techniques',
+		title: 'Chapter 02 – ???',
 		items: [
-			// поки пусто — додаси пізніше
-		]
+			// додаси пізніше
+		],
 	},
 
 	{
 		id: 'chapter-03',
-		title: 'Chapter 03 – Animation & Physics',
+		title: 'Chapter 03 – ???',
 		items: [
-			// поки пусто
-		]
-	}
-] as const;
+			// додаси пізніше
+		],
+	},
+];
+
