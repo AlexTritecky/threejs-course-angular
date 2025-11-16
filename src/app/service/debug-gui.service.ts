@@ -988,4 +988,60 @@ export class DebugGuiService {
 		return gui;
 	}
 
+
+	createHauntedHouseGui(config: {
+		ambientLight: THREE.AmbientLight;
+		directionalLight: THREE.DirectionalLight;
+		floorMaterial: THREE.MeshStandardMaterial;
+	}): GUI {
+		const gui = new GUI({
+			width: 320,
+			title: 'Haunted House debug',
+			closeFolders: false,
+		});
+
+		/**
+		 * Ambient light folder
+		 */
+		const ambientFolder = gui.addFolder('Ambient light');
+		ambientFolder
+			.add(config.ambientLight, 'intensity', 0, 2, 0.001)
+			.name('Intensity');
+
+		/**
+		 * Directional light folder
+		 */
+		const dirFolder = gui.addFolder('Directional light');
+		dirFolder
+			.add(config.directionalLight, 'intensity', 0, 2, 0.001)
+			.name('Intensity');
+		dirFolder
+			.add(config.directionalLight.position, 'x', -10, 10, 0.1)
+			.name('Pos X');
+		dirFolder
+			.add(config.directionalLight.position, 'y', -10, 10, 0.1)
+			.name('Pos Y');
+		dirFolder
+			.add(config.directionalLight.position, 'z', -10, 10, 0.1)
+			.name('Pos Z');
+
+		/**
+		 * Floor displacement folder
+		 */
+		const floorFolder = gui.addFolder('Floor displacement');
+		floorFolder
+			.add(config.floorMaterial, 'displacementScale', 0, 1, 0.001)
+			.name('Scale');
+		floorFolder
+			.add(config.floorMaterial, 'displacementBias', -1, 1, 0.001)
+			.name('Bias');
+
+		ambientFolder.open();
+		dirFolder.open();
+		floorFolder.open();
+
+		return gui;
+	}
+
+
 }

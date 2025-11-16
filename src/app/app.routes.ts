@@ -102,6 +102,13 @@ export const routes: Routes = [
 						(m) => m.Shadows,
 					),
 			},
+			{
+				path: 'haunted-house',
+				loadComponent: () =>
+					import('./pages/haunted-house/haunted-house').then(
+						(m) => m.HauntedHouse,
+					),
+			}
 		],
 	},
 
