@@ -22,8 +22,6 @@ import { DebugGuiService } from '../../service/debug-gui.service';
 export class Animations implements AfterViewInit, OnDestroy {
 	readonly threeCoreService = inject(ThreeCoreService);
 	readonly debugGuiService = inject(DebugGuiService);
-
-	/** Canvas reference retrieved using the Angular signals-based viewChild() */
 	readonly canvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
 
 	/** Core Three.js elements */

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as THREE from 'three';
 import GUI from 'lil-gui';
 import gsap from 'gsap';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 @Injectable({
 	providedIn: 'root',
@@ -123,5 +124,87 @@ export class DebugGuiService {
 		animFolder.open();
 
 		return animFolder;
+	}
+
+
+	/**
+   * Creates a lil-gui instance for camera exploration:
+   * - field of view
+   * - position (x, y, z)
+   * - quick "look at origin" helper
+   */
+	createCameraGui(
+		camera: THREE.PerspectiveCamera,
+		controls?: OrbitControls,
+	): GUI {
+		const gui = new GUI();
+
+		// запам’ятаємо дефолтну позицію камери (як в initThree)
+		const defaultPos = camera.position.clone();
+		const defaultTarget = new THREE.Vector3(0, 0, 0);
+
+		const params = {
+			fov: camera.fov,
+			posX: camera.position.x,
+			posY: camera.position.y,
+			posZ: camera.position.z,
+			lookAtOrigin: () => {
+				if (controls) {
+					// reset camera position
+					camera.position.copy(defaultPos);
+
+					// reset target
+					controls.target.copy(defaultTarget);
+
+					// перерахувати матриці
+					controls.update();
+				} else {
+					camera.position.copy(defaultPos);
+					camera.lookAt(defaultTarget);
+				}
+
+				// оновити слайдери в GUI (опційно)
+				params.posX = camera.position.x;
+				params.posY = camera.position.y;
+				params.posZ = camera.position.z;
+			},
+		};
+
+		const folder = gui.addFolder('Camera');
+
+		folder
+			.add(params, 'fov', 20, 120, 1)
+			.name('FOV')
+			.onChange((value: number) => {
+				camera.fov = value;
+				camera.updateProjectionMatrix();
+			});
+
+		folder
+			.add(params, 'posX', -10, 10, 0.1)
+			.name('Position X')
+			.onChange((value: number) => {
+				camera.position.x = value;
+			});
+
+		folder
+			.add(params, 'posY', -10, 10, 0.1)
+			.name('Position Y')
+			.onChange((value: number) => {
+				camera.position.y = value;
+			});
+
+		folder
+			.add(params, 'posZ', 0.5, 20, 0.1)
+			.name('Position Z')
+			.onChange((value: number) => {
+				camera.position.z = value;
+			});
+
+		folder.add(params, 'lookAtOrigin').name('Reset & look at (0,0,0)');
+
+		folder.open();
+
+		return gui;
 	}
 }

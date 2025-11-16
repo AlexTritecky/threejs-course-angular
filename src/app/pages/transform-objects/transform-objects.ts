@@ -22,8 +22,6 @@ import { DebugGuiService } from '../../service/debug-gui.service';
 export class TransformObjects implements AfterViewInit, OnDestroy {
 	readonly threeCoreService = inject(ThreeCoreService);
 	readonly debugGuiService = inject(DebugGuiService);
-
-	/** Reference to the canvas inside the HTML template */
 	readonly canvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
 
 	/** Core Three.js elements */
