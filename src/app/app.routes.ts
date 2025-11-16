@@ -6,6 +6,7 @@ import { Geometries } from './pages/geometries/geometries';
 import { DebugUi } from './pages/debug-ui/debug-ui';
 import { Textures } from './pages/textures/textures';
 import { Materials } from './pages/materials/materials';
+import { Text } from './pages/text/text';
 
 export const routes: Routes = [
 	{
@@ -40,5 +41,9 @@ export const routes: Routes = [
 	{
 		path: 'chapter-01/materials',
 		component: Materials
+	},
+	{
+		path: 'chapter-01/text',
+		component: Text
 	}
 ];

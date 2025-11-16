@@ -608,4 +608,113 @@ export class DebugGuiService {
 
 		return gui;
 	}
+
+
+	/**
+	 * Створює GUI для роботи з 3D-текстом:
+	 * - зміна контенту тексту
+	 * - розмір / глибина / bevel
+	 * - кількість "donuts"
+	 * - автоспін групи з текстом
+	 *
+	 * @param textConfig – обʼєкт з поточними параметрами тексту й анімації
+	 * @param rebuildCallback – колбек, який має заново побудувати text + donuts
+	 */
+	createTextGui(
+		textConfig: {
+			content: string;
+			size: number;
+			depth: number;
+			bevelEnabled: boolean;
+			bevelThickness: number;
+			bevelSize: number;
+			curveSegments: number;
+			bevelSegments: number;
+			donutsCount: number;
+			autoRotate: boolean;
+			rotationSpeed: number;
+		},
+		rebuildCallback: () => void,
+	): GUI {
+		const gui = new GUI({
+			width: 320,
+			title: 'Text Debug',
+			closeFolders: false,
+		});
+
+		/**
+		 * FOLDER: Text geometry
+		 * Всі параметри, які вимагають перебудови геометрії, викликають rebuildCallback
+		 */
+		const geoFolder = gui.addFolder('Text geometry');
+
+		geoFolder
+			.add(textConfig, 'content')
+			.name('Text')
+			.onFinishChange(rebuildCallback);
+
+		geoFolder
+			.add(textConfig, 'size', 0.1, 2, 0.01)
+			.name('Size')
+			.onFinishChange(rebuildCallback);
+
+		geoFolder
+			.add(textConfig, 'depth', 0.01, 1, 0.01)
+			.name('Depth')
+			.onFinishChange(rebuildCallback);
+
+		geoFolder
+			.add(textConfig, 'curveSegments', 1, 32, 1)
+			.name('Curve segs')
+			.onFinishChange(rebuildCallback);
+
+		geoFolder
+			.add(textConfig, 'bevelEnabled')
+			.name('Bevel')
+			.onFinishChange(rebuildCallback);
+
+		geoFolder
+			.add(textConfig, 'bevelThickness', 0, 0.2, 0.005)
+			.name('Bevel thickness')
+			.onFinishChange(rebuildCallback);
+
+		geoFolder
+			.add(textConfig, 'bevelSize', 0, 0.2, 0.005)
+			.name('Bevel size')
+			.onFinishChange(rebuildCallback);
+
+		geoFolder
+			.add(textConfig, 'bevelSegments', 0, 10, 1)
+			.name('Bevel segs')
+			.onFinishChange(rebuildCallback);
+
+		geoFolder
+			.add(textConfig, 'donutsCount', 0, 500, 1)
+			.name('Donuts count')
+			.onFinishChange(rebuildCallback);
+
+		geoFolder
+			.add({ rebuild: rebuildCallback }, 'rebuild')
+			.name('Rebuild now');
+
+		geoFolder.open();
+
+		/**
+		 * FOLDER: Rotation
+		 * Просто змінює поля в textConfig, а компонент вже читає їх у своєму лупі
+		 */
+		const rotFolder = gui.addFolder('Rotation');
+
+		rotFolder
+			.add(textConfig, 'autoRotate')
+			.name('Auto-rotate group');
+
+		rotFolder
+			.add(textConfig, 'rotationSpeed', -2, 2, 0.01)
+			.name('Speed (rad/s)');
+
+		rotFolder.open();
+
+		return gui;
+	}
 }
