@@ -108,6 +108,13 @@ export const routes: Routes = [
 					import('./pages/haunted-house/haunted-house').then(
 						(m) => m.HauntedHouse,
 					),
+			},
+			{
+				path: 'particles',
+				loadComponent: () =>
+					import('./pages/particles/particles').then(
+						(m) => m.Particles,
+					),
 			}
 		],
 	},

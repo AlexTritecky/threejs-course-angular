@@ -1044,4 +1044,84 @@ export class DebugGuiService {
 	}
 
 
+	/**
+ * GUI для партиклів:
+ * - колір (material.color)
+ * - розмір (material.size)
+ *
+ * @param material - PointsMaterial партиклів
+ * @param config - обʼєкт параметрів, які буде змінювати GUI
+ */
+	// DebugGuiService
+
+	createParticlesGui(
+		material: THREE.PointsMaterial,
+		config: {
+			color: string;
+			size: number;
+			count: number;
+			mode: 'sphereBasic'
+			| 'randomBasic'
+			| 'randomAlphaAdditive'
+			| 'randomVertexColors'
+			| 'rotatePoints'
+			| 'waveAttributes';
+		},
+		onModeOrCountChange: () => void,
+	): GUI {
+		const gui = new GUI({
+			width: 260,
+			title: 'Particles debug',
+			closeFolders: false,
+		});
+
+		const folder = gui.addFolder('Particles');
+
+		// Колір (міняємо material.color)
+		folder
+			.addColor(config, 'color')
+			.name('Color')
+			.onChange((value: string) => {
+				material.color.set(value);
+				material.needsUpdate = true;
+			});
+
+		// Розмір (міняємо material.size)
+		folder
+			.add(config, 'size', 0.01, 2, 0.01) // ширший діапазон
+			.name('Size')
+			.onChange((value: number) => {
+				material.size = value;
+				material.needsUpdate = true;
+			});
+
+		// Кількість партиклів (потребує перебудови геометрії)
+		folder
+			.add(config, 'count', 100, 50000, 100)
+			.name('Count')
+			.onFinishChange(() => {
+				onModeOrCountChange();
+			});
+
+		// Режим прикладу з уроку
+		folder
+			.add(config, 'mode', [
+				'sphereBasic',          // сфера з партиклів
+				'randomBasic',          // рандомні без текстур
+				'randomAlphaAdditive',  // alphaMap + Additive + depthWrite=false
+				'randomVertexColors',   // vertexColors
+				'rotatePoints',         // обертання Points
+				'waveAttributes',       // хвиля через атрибути
+			])
+			.name('Example')
+			.onChange(() => {
+				onModeOrCountChange();
+			});
+
+		folder.open();
+
+		return gui;
+	}
+
+
 }
