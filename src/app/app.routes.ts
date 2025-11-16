@@ -7,9 +7,6 @@ export const routes: Routes = [
 		pathMatch: 'full',
 	},
 
-	/**
-	 * Chapter 01 – Basics
-	 */
 	{
 		path: 'chapter-01',
 		children: [
