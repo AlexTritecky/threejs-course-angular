@@ -371,4 +371,123 @@ export class DebugGuiService {
 
 		return gui;
 	}
+
+
+	/**
+	 * Creates a GUI to explore texture parameters:
+	 * - switch current color map
+	 * - change wrapping mode
+	 * - tweak repeat.x / repeat.y
+	 * - toggle between Nearest / Linear filters
+	 *
+	 * @param material - target material whose map will be updated
+	 * @param textures - dictionary of textures (key -> THREE.Texture)
+	 */
+	createTexturesGui(
+		material: THREE.MeshBasicMaterial,
+		textures: Record<string, THREE.Texture>,
+	): GUI {
+		const gui = new GUI({
+			width: 320,
+			title: 'Textures debug',
+			closeFolders: false,
+		});
+
+		const textureKeys = Object.keys(textures);
+		if (textureKeys.length === 0) {
+			console.warn('DebugGuiService.createTexturesGui: no textures provided');
+			return gui;
+		}
+
+		const params = {
+			currentMapKey: textureKeys[0],
+			wrap: 'MirrorRepeat' as 'Clamp' | 'Repeat' | 'MirrorRepeat',
+			repeatX: 1,
+			repeatY: 1,
+			minFilter: 'Nearest' as 'Nearest' | 'Linear',
+			magFilter: 'Nearest' as 'Nearest' | 'Linear',
+		};
+
+		const applySettings = () => {
+			const map = textures[params.currentMapKey];
+			if (!map) {
+				console.warn(
+					`DebugGuiService.createTexturesGui: texture "${params.currentMapKey}" not found`,
+				);
+				return;
+			}
+
+			// Assign map to material
+			material.map = map;
+
+			// Wrap mode
+			const wrapMap: Record<string, THREE.Wrapping> = {
+				Clamp: THREE.ClampToEdgeWrapping,
+				Repeat: THREE.RepeatWrapping,
+				MirrorRepeat: THREE.MirroredRepeatWrapping,
+			};
+			const wrapping = wrapMap[params.wrap] ?? THREE.RepeatWrapping;
+			map.wrapS = wrapping;
+			map.wrapT = wrapping;
+
+			// Repeat
+			map.repeat.set(params.repeatX, params.repeatY);
+
+			// Color space + filtering
+			map.colorSpace = THREE.SRGBColorSpace;
+
+			map.minFilter =
+				params.minFilter === 'Nearest'
+					? THREE.NearestFilter
+					: THREE.LinearMipmapLinearFilter;
+			map.magFilter =
+				params.magFilter === 'Nearest'
+					? THREE.NearestFilter
+					: THREE.LinearFilter;
+
+			map.generateMipmaps = params.minFilter !== 'Nearest';
+
+			map.needsUpdate = true;
+			material.needsUpdate = true;
+		};
+
+		// Initial apply
+		applySettings();
+
+		const folder = gui.addFolder('Textures');
+
+		folder
+			.add(params, 'currentMapKey', textureKeys)
+			.name('Active map')
+			.onChange(applySettings);
+
+		folder
+			.add(params, 'wrap', ['Clamp', 'Repeat', 'MirrorRepeat'])
+			.name('Wrap mode')
+			.onChange(applySettings);
+
+		folder
+			.add(params, 'repeatX', 0.25, 5, 0.25)
+			.name('Repeat X')
+			.onChange(applySettings);
+
+		folder
+			.add(params, 'repeatY', 0.25, 5, 0.25)
+			.name('Repeat Y')
+			.onChange(applySettings);
+
+		folder
+			.add(params, 'minFilter', ['Nearest', 'Linear'])
+			.name('Min filter')
+			.onChange(applySettings);
+
+		folder
+			.add(params, 'magFilter', ['Nearest', 'Linear'])
+			.name('Mag filter')
+			.onChange(applySettings);
+
+		folder.open();
+
+		return gui;
+	}
 }
