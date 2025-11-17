@@ -116,6 +116,10 @@ export const routes: Routes = [
 			{
 				path: 'blender-models',
 				loadComponent: () => import('./pages/blender-models/blender-models').then((m) => m.BlenderModels),
+			},
+			{
+				path: 'environment-map',
+				loadComponent: () => import('./pages/environment-map/environment-map').then((m) => m.EnvironmentMap),
 			}
 		],
 	},

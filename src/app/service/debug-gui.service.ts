@@ -1804,4 +1804,129 @@ export class DebugGuiService {
 
 		return gui;
 	}
+
+
+	createEnvironmentMapGui(
+		scene: THREE.Scene,
+		options?: {
+			presets?: { id: string; label: string }[];
+			currentPresetId?: string;
+			onPresetChange?: (id: string) => void;
+		},
+	): GUI {
+		const extended = scene as any;
+
+		// Default values
+		if (extended.environmentIntensity === undefined) {
+			extended.environmentIntensity = 1;
+		}
+		if (extended.backgroundBlurriness === undefined) {
+			extended.backgroundBlurriness = 0;
+		}
+		if (extended.backgroundIntensity === undefined) {
+			extended.backgroundIntensity = 1;
+		}
+
+		const defaults = {
+			environmentIntensity: extended.environmentIntensity,
+			backgroundBlurriness: extended.backgroundBlurriness,
+			backgroundIntensity: extended.backgroundIntensity,
+			backgroundRotationY: extended.backgroundRotation?.y ?? 0,
+			environmentRotationY: extended.environmentRotation?.y ?? 0,
+		};
+
+		const gui = new GUI({
+			width: 320,
+			title: 'Environment map debug',
+			closeFolders: false,
+		});
+
+		/**
+		 * (optional) Environment map preset switcher
+		 */
+		if (options?.presets?.length && options.onPresetChange) {
+			const presetsFolder = gui.addFolder('Environment map');
+
+			// map id -> label for nicer dropdown
+			const presetOptions: Record<string, string> = {};
+			for (const p of options.presets) {
+				presetOptions[p.id] = p.label;
+			}
+
+			const presetState = {
+				preset: options.currentPresetId ?? options.presets[0].id,
+			};
+
+			presetsFolder
+				.add(presetState, 'preset', presetOptions)
+				.name('Active preset')
+				.onChange((value: string) => {
+					options.onPresetChange?.(value);
+				});
+
+			presetsFolder.open();
+		}
+
+		/**
+		 * Environment / background parameters
+		 */
+		const envFolder = gui.addFolder('Environment');
+		envFolder
+			.add(extended, 'environmentIntensity', 0, 10, 0.001)
+			.name('Env intensity');
+		envFolder
+			.add(extended, 'backgroundBlurriness', 0, 1, 0.001)
+			.name('Background blur');
+		envFolder
+			.add(extended, 'backgroundIntensity', 0, 10, 0.001)
+			.name('Background intensity');
+		envFolder.open();
+
+		/**
+		 * Rotation
+		 */
+		const rotationFolder = gui.addFolder('Rotation');
+
+		if (extended.backgroundRotation) {
+			rotationFolder
+				.add(extended.backgroundRotation, 'y', 0, Math.PI * 2, 0.001)
+				.name('Background rot Y');
+		}
+
+		if (extended.environmentRotation) {
+			rotationFolder
+				.add(extended.environmentRotation, 'y', 0, Math.PI * 2, 0.001)
+				.name('Env rot Y');
+		}
+
+		rotationFolder.close();
+
+		/**
+		 * Helpers
+		 */
+		const helpersFolder = gui.addFolder('Helpers');
+
+		const actions = {
+			resetToDefaults: () => {
+				extended.environmentIntensity = defaults.environmentIntensity;
+				extended.backgroundBlurriness = defaults.backgroundBlurriness;
+				extended.backgroundIntensity = defaults.backgroundIntensity;
+
+				if (extended.backgroundRotation) {
+					extended.backgroundRotation.y = defaults.backgroundRotationY;
+				}
+				if (extended.environmentRotation) {
+					extended.environmentRotation.y = defaults.environmentRotationY;
+				}
+			},
+		};
+
+		helpersFolder
+			.add(actions, 'resetToDefaults')
+			.name('Reset to defaults');
+
+		helpersFolder.close();
+
+		return gui;
+	}
 }
