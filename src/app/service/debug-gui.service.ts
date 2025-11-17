@@ -1010,12 +1010,12 @@ export class DebugGuiService {
 			size: number;
 			count: number;
 			mode:
-				| 'sphereBasic'
-				| 'randomBasic'
-				| 'randomAlphaAdditive'
-				| 'randomVertexColors'
-				| 'rotatePoints'
-				| 'waveAttributes';
+			| 'sphereBasic'
+			| 'randomBasic'
+			| 'randomAlphaAdditive'
+			| 'randomVertexColors'
+			| 'rotatePoints'
+			| 'waveAttributes';
 		},
 		onModeOrCountChange: () => void,
 	): GUI {
@@ -1208,14 +1208,40 @@ export class DebugGuiService {
 	}
 
 	/**
-	 * Creates a GUI panel for real-time physics debugging:
-	 * - trigger physics actions: spawn spheres, spawn boxes, reset the simulation
-	 * - adjust world parameters such as gravity with instant updates
-	 * - control contact material properties (friction and restitution)
-	 * - organizes controls into clear action, world, and material sections
+	 * Creates a GUI panel for real-time physics art direction:
+	 * - ACTIONS:
+	 *   - spawn dynamic bodies (spheres / boxes)
+	 *   - reset the whole simulation world
 	 *
-	 * @param config – physics configuration containing the world, contact material, and action callbacks
-	 * @returns GUI – the initialized debugging interface for physics simulation parameters
+	 * - WORLD:
+	 *   - live-edit global gravity (Y axis) and instantly see the effect
+	 *
+	 * - CONTACT MATERIAL:
+	 *   - tune friction (surface drag)
+	 *   - tune restitution (bounciness) for all default contacts
+	 *
+	 * - TIME:
+	 *   - control time scale (bullet-time / fast-forward) without touching the core loop
+	 *
+	 * - FORCES / WIND:
+	 *   - enable/disable directional wind
+	 *   - adjust wind vector (X/Y/Z components)
+	 *   - toggle noise-based turbulence for more organic motion
+	 *
+	 * - HURRICANE:
+	 *   - enable/disable the hurricane particle column
+	 *   - globally scale spin speed of the vortex particles
+	 *
+	 * - VORTEX:
+	 *   - enable/disable a tangential + vertical vortex force around the center
+	 *   - control vortex strength that pulls rigid bodies into a swirling funnel
+	 *
+	 * The GUI is split into clear sections (Actions, World, Contact material, Time,
+	 * Forces, Hurricane, Vortex) so you can iteratively shape both the look
+	 * (particles / motion feeling) and the underlying physics behavior.
+	 *
+	 * @param config – physics configuration hooks: world, contact material and all action/force callbacks
+	 * @returns GUI – a lil-gui instance wired to the current physics sandbox
 	 */
 	createPhysicsGui(config: {
 		world: CANNON.World;
@@ -1223,6 +1249,18 @@ export class DebugGuiService {
 		onCreateSphere: () => void;
 		onCreateBox: () => void;
 		onReset: () => void;
+		onTimeScaleChange?: (value: number) => void;
+		onToggleWind?: (enabled: boolean) => void;
+		onWindVectorChange?: (vec: { x: number; y: number; z: number }) => void;
+		onWindNoiseToggle?: (enabled: boolean) => void;
+
+		// Hurricane controls
+		onToggleHurricane?: (enabled: boolean) => void;
+		onHurricaneSpeedChange?: (value: number) => void;
+
+		// Vortex controls
+		onToggleVortex?: (enabled: boolean) => void;
+		onVortexStrengthChange?: (value: number) => void;
 	}): GUI {
 		const gui = new GUI({
 			width: 280,
@@ -1290,6 +1328,129 @@ export class DebugGuiService {
 
 		materialFolder.open();
 
+		/**
+		 * TIME: time scale (bullet time / fast-forward)
+		 */
+		const timeFolder = gui.addFolder('Time');
+
+		const timeParams = {
+			timeScale: 1,
+		};
+
+		timeFolder
+			.add(timeParams, 'timeScale', 0.05, 2, 0.01)
+			.name('Time scale')
+			.onChange((value: number) => {
+				config.onTimeScaleChange?.(value);
+			});
+
+		timeFolder.open();
+
+		/**
+		 * FORCES: wind (vector) + noise
+		 */
+		const forcesFolder = gui.addFolder('Forces');
+
+		const forcesParams = {
+			windEnabled: false,
+			windX: 8,
+			windY: 0,
+			windZ: 0,
+			useNoise: false,
+		};
+
+		const emitWindVector = () => {
+			config.onWindVectorChange?.({
+				x: forcesParams.windX,
+				y: forcesParams.windY,
+				z: forcesParams.windZ,
+			});
+		};
+
+		forcesFolder
+			.add(forcesParams, 'windEnabled')
+			.name('Wind enabled')
+			.onChange((value: boolean) => {
+				config.onToggleWind?.(value);
+			});
+
+		forcesFolder
+			.add(forcesParams, 'windX', -30, 30, 0.5)
+			.name('Wind X')
+			.onChange(emitWindVector);
+
+		forcesFolder
+			.add(forcesParams, 'windY', -30, 30, 0.5)
+			.name('Wind Y')
+			.onChange(emitWindVector);
+
+		forcesFolder
+			.add(forcesParams, 'windZ', -30, 30, 0.5)
+			.name('Wind Z')
+			.onChange(emitWindVector);
+
+		forcesFolder
+			.add(forcesParams, 'useNoise')
+			.name('Noise mode')
+			.onChange((value: boolean) => {
+				config.onWindNoiseToggle?.(value);
+			});
+
+		forcesFolder.open();
+
+		/**
+		 * HURRICANE: particles + spin speed
+		 */
+		const hurricaneFolder = gui.addFolder('Hurricane');
+
+		const hurricaneParams = {
+			enabled: true,
+			speed: 1,
+		};
+
+		hurricaneFolder
+			.add(hurricaneParams, 'enabled')
+			.name('Enable hurricane')
+			.onChange((value: boolean) => {
+				config.onToggleHurricane?.(value);
+			});
+
+		hurricaneFolder
+			.add(hurricaneParams, 'speed', 0.1, 3, 0.05)
+			.name('Hurricane speed')
+			.onChange((value: number) => {
+				config.onHurricaneSpeedChange?.(value);
+			});
+
+		hurricaneFolder.open();
+
+		/**
+		 * VORTEX: tangential + vertical suction around center
+		 */
+		const vortexFolder = gui.addFolder('Vortex');
+
+		const vortexParams = {
+			enabled: false,
+			strength: 25,
+		};
+
+		vortexFolder
+			.add(vortexParams, 'enabled')
+			.name('Enable vortex')
+			.onChange((value: boolean) => {
+				config.onToggleVortex?.(value);
+			});
+
+		vortexFolder
+			.add(vortexParams, 'strength', 0, 80, 1)
+			.name('Vortex strength')
+			.onChange((value: number) => {
+				config.onVortexStrengthChange?.(value);
+			});
+
+		vortexFolder.open();
+
 		return gui;
 	}
+
 }
