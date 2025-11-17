@@ -14,11 +14,9 @@ import { DebugGuiService } from '../../service/debug-gui.service';
 	styleUrl: './debug-ui.scss',
 })
 export class DebugUi implements AfterViewInit, OnDestroy {
-	/** Shared helpers for scene / camera / renderer / controls / resize */
 	private readonly threeCore = inject(ThreeCoreService);
 	private readonly debugGui = inject(DebugGuiService);
 
-	/** Canvas reference from template (<canvas #canvas class="webgl"></canvas>) */
 	readonly canvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
 
 	/** Core Three.js primitives */

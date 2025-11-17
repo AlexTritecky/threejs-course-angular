@@ -25,10 +25,10 @@ export class Textures implements AfterViewInit, OnDestroy {
 	private renderer!: THREE.WebGLRenderer;
 	private controls!: OrbitControls;
 
-	/** Textured cube */
+	/** Textured cube used to preview different maps and sampling options */
 	private mesh!: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>;
 
-	/** Available textures for GUI switching */
+	/** Available textures for runtime switching via the debug GUI */
 	private textures!: {
 		minecraft: THREE.Texture;
 		checker1024: THREE.Texture;
@@ -43,13 +43,13 @@ export class Textures implements AfterViewInit, OnDestroy {
 		doorRoughness: THREE.Texture;
 	};
 
-	/** Debug GUI instance (textures folder lives here) */
+	/** Debug GUI instance (textures controls are attached here) */
 	private gui!: GUI;
 
-	/** Animation loop id */
+	/** requestAnimationFrame id, used for proper cleanup */
 	private animationFrameId?: number;
 
-	/** Clock (for optional time-based animations) */
+	/** Clock used for time-based animation (e.g. auto-rotation) */
 	private clock = new THREE.Clock();
 
 	ngAfterViewInit(): void {
@@ -69,11 +69,12 @@ export class Textures implements AfterViewInit, OnDestroy {
 	}
 
 	/**
-	 * Sets up:
-	 * - loading manager + logging
-	 * - multiple textures (Minecraft + checkerboards + all door maps)
-	 * - textured cube
-	 * - camera, renderer, OrbitControls
+	 * Initializes the full Three.js stack:
+	 * - Scene
+	 * - LoadingManager with console logging
+	 * - Multiple textures (Minecraft, checkerboards, and the full door PBR set)
+	 * - Textured cube mesh
+	 * - Perspective camera, WebGL renderer, and OrbitControls
 	 */
 	private initThree(): void {
 		const canvas = this.canvas()?.nativeElement;
@@ -85,7 +86,7 @@ export class Textures implements AfterViewInit, OnDestroy {
 		/** Scene */
 		this.scene = this.threeCoreService.createScene();
 
-		/** Loading manager with basic console feedback */
+		/** Loading manager with basic console feedback for texture loading lifecycle */
 		const loadingManager = new THREE.LoadingManager();
 		loadingManager.onStart = () => {
 			console.log('loadingManager: loading started');
@@ -103,14 +104,15 @@ export class Textures implements AfterViewInit, OnDestroy {
 		const textureLoader = new THREE.TextureLoader(loadingManager);
 
 		/**
-		 * Base color-like textures
+		 * Base color-like textures (used as diffuse/baseColor maps in the GUI)
 		 */
 		const minecraft = textureLoader.load('/textures/minecraft.png');
 		const checker1024 = textureLoader.load('/textures/checkerboard-1024x1024.png');
 		const checker2 = textureLoader.load('/textures/checkerboard-2x2.png');
 
 		/**
-		 * Door texture set - separate maps, but we'll see them as regular maps (map) through GUI
+		 * Door texture set (PBR-style maps).
+		 * In this exercise they are treated as "regular" maps and swapped into `map` via GUI.
 		 */
 		const doorColor = textureLoader.load('/textures/door/color.jpg');
 		const doorAlpha = textureLoader.load('/textures/door/alpha.jpg');
@@ -120,7 +122,12 @@ export class Textures implements AfterViewInit, OnDestroy {
 		const doorMetalness = textureLoader.load('/textures/door/metalness.jpg');
 		const doorRoughness = textureLoader.load('/textures/door/roughness.jpg');
 
-		// Налаштування для текстур, які ми хочемо показувати як кольорові
+		/**
+		 * Common configuration for textures that are displayed as color-like maps:
+		 * - sRGB color space for correct gamma handling
+		 * - Mirrored repeat wrapping for visible tiling
+		 * - Nearest filtering to clearly show pixel structure when zoomed
+		 */
 		const colorLikeTextures = [
 			minecraft,
 			checker1024,
@@ -156,7 +163,7 @@ export class Textures implements AfterViewInit, OnDestroy {
 			doorRoughness,
 		};
 
-		/** Cube + basic material using one of the textures (default: Minecraft) */
+		/** Cube and basic material using the Minecraft texture as default */
 		const geometry = new THREE.BoxGeometry(1, 1, 1);
 		console.log('Box geometry attributes:', geometry.attributes);
 
@@ -185,32 +192,35 @@ export class Textures implements AfterViewInit, OnDestroy {
 		});
 		this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-		/** OrbitControls */
+		/** OrbitControls (for interactive camera rotation/zoom) */
 		this.controls = this.threeCoreService.createOrbitControls(this.camera, canvas);
 		this.controls.enableDamping = true;
 	}
 
 	/**
-	 * Attaches a “Textures” GUI to:
-	 * - switch active map (minecraft / checkerboards / all door maps)
-	 * - tweak repeat
-	 * - change wrap mode
-	 * - switch between Nearest/Linear filters
+	 * Initializes a "Textures" debug GUI that:
+	 * - switches the active texture map (Minecraft, checkerboards, door maps)
+	 * - controls UV repeat
+	 * - changes wrapping mode
+	 * - toggles between Nearest / Linear filtering
 	 */
 	private initGui(): void {
 		this.gui = this.debugGuiService.createTexturesGui(this.mesh.material, this.textures);
 	}
 
 	/**
-	 * Main render loop: updates controls and renders the scene.
-	 * (Optional: slow automatic rotation to better see textures)
+	 * Main render loop:
+	 * - applies a slow auto-rotation to the cube to better showcase texture tiling and filtering
+	 * - updates OrbitControls damping
+	 * - renders the scene every frame
 	 */
 	private startLoop(): void {
 		const tick = () => {
 			this.animationFrameId = requestAnimationFrame(tick);
 
 			const elapsedTime = this.clock.getElapsedTime();
-			// повільний автоспін, щоб текстури краще було видно
+
+			// Slow auto-spin to make texture sampling and tiling more visually obvious
 			this.mesh.rotation.y = elapsedTime * 0.25;
 
 			this.controls.update();
@@ -221,7 +231,7 @@ export class Textures implements AfterViewInit, OnDestroy {
 	}
 
 	/**
-	 * Keeps camera aspect ratio and renderer size in sync with window size.
+	 * Keeps the perspective camera and renderer resolution in sync with the window size.
 	 */
 	private handleResize = () => {
 		this.threeCoreService.updateOnResize(this.camera, this.renderer);

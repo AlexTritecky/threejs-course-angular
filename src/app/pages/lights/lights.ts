@@ -18,20 +18,23 @@ export class Lights implements AfterViewInit, OnDestroy {
 	private readonly threeCore = inject(ThreeCoreService);
 	private readonly debugGui = inject(DebugGuiService);
 
+	/** Reference to the <canvas> used for WebGL rendering */
 	readonly canvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
 
+	/** Core Three.js entities */
 	private scene!: THREE.Scene;
 	private camera!: THREE.PerspectiveCamera;
 	private renderer!: THREE.WebGLRenderer;
 	private controls!: OrbitControls;
 
+	/** Materials and geometry meshes used for light demonstrations */
 	private mat!: THREE.MeshStandardMaterial;
 	private sphere!: THREE.Mesh;
 	private cube!: THREE.Mesh;
 	private torus!: THREE.Mesh;
 	private plane!: THREE.Mesh;
 
-	// lights
+	/** Various types of lights used to visualize lighting differences */
 	private ambientLight!: THREE.AmbientLight;
 	private directionalLight!: THREE.DirectionalLight;
 	private hemisphereLight!: THREE.HemisphereLight;
@@ -39,7 +42,7 @@ export class Lights implements AfterViewInit, OnDestroy {
 	private rectAreaLight!: THREE.RectAreaLight;
 	private spotLight!: THREE.SpotLight;
 
-	// helpers
+	/** Light helpers providing real-time debugging visualizations */
 	private helpers!: {
 		hemisphere: THREE.HemisphereLightHelper;
 		directional: THREE.DirectionalLightHelper;
@@ -48,9 +51,10 @@ export class Lights implements AfterViewInit, OnDestroy {
 		rectArea: RectAreaLightHelper;
 	};
 
-	// gui
+	/** Debug GUI instance */
 	private gui?: GUI;
 
+	/** Render-loop control */
 	private animationId?: number;
 	private clock = new THREE.Clock();
 
@@ -68,13 +72,16 @@ export class Lights implements AfterViewInit, OnDestroy {
 		cancelAnimationFrame(this.animationId ?? 0);
 		window.removeEventListener('resize', this.handleResize);
 
+		// Release GPU memory + remove listeners
 		this.controls?.dispose();
 		this.renderer?.dispose();
-		this.gui?.destroy(); // ⬅️ достатньо
-
-		// опційно: dispose геометрій/матеріалів, якщо захочеш
+		this.gui?.destroy();
 	}
 
+	/**
+	 * Initializes the Three.js scene, camera, renderer, and controls.
+	 * Wrapped in a service to keep the component clean and reusable.
+	 */
 	private initThree(): void {
 		const canvas = this.canvas()?.nativeElement;
 		if (!canvas) return;
@@ -95,6 +102,10 @@ export class Lights implements AfterViewInit, OnDestroy {
 		this.controls.enableDamping = true;
 	}
 
+	/**
+	 * Creates and configures multiple light sources for demonstration.
+	 * Each light type showcases different shading behavior.
+	 */
 	private initLights(): void {
 		this.ambientLight = new THREE.AmbientLight(0xffffff, 1);
 		this.scene.add(this.ambientLight);
@@ -121,7 +132,7 @@ export class Lights implements AfterViewInit, OnDestroy {
 		this.scene.add(this.spotLight);
 		this.scene.add(this.spotLight.target);
 
-		// helpers
+		/** Create helpers to visualize light directions, ranges and positions */
 		this.helpers = {
 			hemisphere: new THREE.HemisphereLightHelper(this.hemisphereLight, 0.2),
 			directional: new THREE.DirectionalLightHelper(this.directionalLight, 0.2),
@@ -133,9 +144,12 @@ export class Lights implements AfterViewInit, OnDestroy {
 		Object.values(this.helpers).forEach((h) => this.scene.add(h));
 	}
 
+	/**
+	 * Creates a set of demo objects to visualize lighting behavior.
+	 * Using MeshStandardMaterial ensures lights and shadows behave physically.
+	 */
 	private initObjects(): void {
-		this.mat = new THREE.MeshStandardMaterial();
-		this.mat.roughness = 0.4;
+		this.mat = new THREE.MeshStandardMaterial({ roughness: 0.4 });
 
 		this.sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), this.mat);
 		this.sphere.position.x = -1.5;
@@ -152,6 +166,9 @@ export class Lights implements AfterViewInit, OnDestroy {
 		this.scene.add(this.sphere, this.cube, this.torus, this.plane);
 	}
 
+	/**
+	 * Registers GUI controls for debugging all light types.
+	 */
 	private initGui(): void {
 		this.gui = this.debugGui.createLightsGui({
 			ambientLight: this.ambientLight,
@@ -164,11 +181,16 @@ export class Lights implements AfterViewInit, OnDestroy {
 		});
 	}
 
+	/**
+	 * Main render loop. Updates animation, controls, and re-renders the scene.
+	 * Uses requestAnimationFrame for optimized rendering.
+	 */
 	private loop = () => {
 		this.animationId = requestAnimationFrame(this.loop);
 
 		const t = this.clock.getElapsedTime();
 
+		// Rotate demo objects to demonstrate how light interacts dynamically
 		this.sphere.rotation.y = 0.1 * t;
 		this.cube.rotation.y = 0.1 * t;
 		this.torus.rotation.y = 0.1 * t;
@@ -181,6 +203,9 @@ export class Lights implements AfterViewInit, OnDestroy {
 		this.renderer.render(this.scene, this.camera);
 	};
 
+	/**
+	 * Handles responsive resizing — updates camera, renderer and aspect ratio.
+	 */
 	private handleResize = () => {
 		this.threeCore.updateOnResize(this.camera, this.renderer);
 	};

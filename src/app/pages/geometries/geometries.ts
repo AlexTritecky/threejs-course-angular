@@ -14,11 +14,9 @@ import { DebugGuiService } from '../../service/debug-gui.service';
 	styleUrl: './geometries.scss',
 })
 export class Geometries implements AfterViewInit, OnDestroy {
-	/** Shared Three.js helpers */
 	private readonly threeCore = inject(ThreeCoreService);
 	private readonly debugGui = inject(DebugGuiService);
 
-	/** Canvas reference */
 	readonly canvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
 
 	/** Core Three.js objects */
