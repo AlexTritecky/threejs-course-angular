@@ -108,7 +108,11 @@ export const routes: Routes = [
 			{
 				path: 'imported-models',
 				loadComponent: () => import('./pages/imported-models/imported-models').then((m) => m.ImportedModels),
-			}
+			},
+			{
+				path: 'raycaster',
+				loadComponent: () => import('./pages/raycaster/raycaster').then((m) => m.Raycaster),
+			},
 		],
 	},
 

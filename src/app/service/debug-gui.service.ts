@@ -1612,4 +1612,118 @@ export class DebugGuiService {
 		return gui;
 	}
 
+
+	/**
+ * Creates a GUI panel for raycaster experiments:
+ * - switch between "mouse" ray and fixed-origin / fixed-direction ray
+ * - edit ray origin and direction components
+ * - tweak sphere base / hover colors
+ * - control duck hover scale and toggle scaling on/off
+ *
+ * The component is responsible for:
+ * - reading `mode` and ray vectors on each frame
+ * - using `spheresBaseColor` / `spheresHoverColor` when coloring meshes
+ * - using `duckHoverScale` / `enableDuckScale` when scaling the model
+ */
+	createRaycasterGui(params: {
+		mode: 'mouse' | 'fixed';
+		originX: number;
+		originY: number;
+		originZ: number;
+		dirX: number;
+		dirY: number;
+		dirZ: number;
+		spheresBaseColor: string;
+		spheresHoverColor: string;
+		duckHoverScale: number;
+		enableDuckScale: boolean;
+	}): GUI {
+		const gui = new GUI({
+			width: 300,
+			title: 'Raycaster debug',
+			closeFolders: false,
+		});
+
+		/**
+		 * Ray source: mouse vs fixed origin/direction
+		 */
+		const rayFolder = gui.addFolder('Ray source');
+
+		const modeCtrl = rayFolder
+			.add(params, 'mode', ['mouse', 'fixed'])
+			.name('Mode (mouse / fixed)');
+
+		// Create controllers so we can enable/disable them
+		const originXCtrl = rayFolder.add(params, 'originX', -5, 5, 0.1).name('Origin X');
+		const originYCtrl = rayFolder.add(params, 'originY', -5, 5, 0.1).name('Origin Y');
+		const originZCtrl = rayFolder.add(params, 'originZ', -5, 5, 0.1).name('Origin Z');
+
+		const dirXCtrl = rayFolder.add(params, 'dirX', -1, 1, 0.01).name('Dir X');
+		const dirYCtrl = rayFolder.add(params, 'dirY', -1, 1, 0.01).name('Dir Y');
+		const dirZCtrl = rayFolder.add(params, 'dirZ', -1, 1, 0.01).name('Dir Z');
+
+		// Helper for enabling/disabling controls
+		const updateRayControls = () => {
+			const isFixed = params.mode === 'fixed';
+
+			originXCtrl.disable(!isFixed);
+			originYCtrl.disable(!isFixed);
+			originZCtrl.disable(!isFixed);
+
+			dirXCtrl.disable(!isFixed);
+			dirYCtrl.disable(!isFixed);
+			dirZCtrl.disable(!isFixed);
+		};
+
+		// Update whenever mode changes
+		modeCtrl.onChange(updateRayControls);
+
+		// Initial enable/disable
+		updateRayControls();
+
+		rayFolder.open();
+
+		/**
+		 * Spheres visual feedback
+		 */
+		const spheresFolder = gui.addFolder('Spheres');
+
+		spheresFolder
+			.addColor(params, 'spheresBaseColor')
+			.name('Base color');
+
+		spheresFolder
+			.addColor(params, 'spheresHoverColor')
+			.name('Hover color');
+
+		spheresFolder.open();
+
+		/**
+		 * Duck model hover behaviour
+		 */
+		const duckFolder = gui.addFolder('Duck model');
+
+		duckFolder
+			.add(params, 'enableDuckScale')
+			.name('Scale on hover');
+
+		duckFolder
+			.add(params, 'duckHoverScale', 1, 3, 0.05)
+			.name('Hover scale')
+			.disable(!params.enableDuckScale)
+			.listen();
+
+		duckFolder.controllers[1].onChange(() => { });
+
+		duckFolder.controllers[0].onChange((v: boolean) => {
+			duckFolder.controllers[1].disable(!v);
+		});
+
+		duckFolder.open();
+
+		return gui;
+	}
+
+
+
 }
