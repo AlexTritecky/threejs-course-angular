@@ -1453,4 +1453,163 @@ export class DebugGuiService {
 		return gui;
 	}
 
+	/**
+ * Creates a GUI panel for imported models (Duck / Helmet / Fox, etc.):
+ * - optional "Model" folder to switch between multiple models
+ * - "Animation" folder (if mixer + animations provided):
+ *   - choose active AnimationClip
+ *   - play / pause
+ *   - time scale
+ *   - reset animation
+ * - "Transform" folder:
+ *   - position X/Y/Z
+ *   - rotation Y
+ *   - uniform scale
+ *
+ * @param config.model       Root object of the loaded GLTF scene (e.g. gltf.scene)
+ * @param config.mixer       AnimationMixer controlling the model (optional)
+ * @param config.animations  Array of AnimationClips from the GLTF (optional)
+ * @param config.modelSelector Optional model switcher (keys + callback)
+ */
+	createImportedModelGui(config: {
+		model: THREE.Object3D;
+		mixer?: THREE.AnimationMixer;
+		animations?: THREE.AnimationClip[];
+		modelSelector?: {
+			currentKey: string;
+			availableKeys: string[];
+			onChange: (key: string) => void;
+		};
+	}): GUI {
+		const gui = new GUI({
+			width: 300,
+			title: 'Imported model debug',
+			closeFolders: false,
+		});
+
+		const { model, mixer, animations = [], modelSelector } = config;
+
+		/**
+		 * MODEL SWITCHER (optional)
+		 * Lets you switch between multiple models via a dropdown.
+		 */
+		if (modelSelector) {
+			const modelFolder = gui.addFolder('Model');
+
+			const selectorParams = {
+				currentModel: modelSelector.currentKey,
+			};
+
+			modelFolder
+				.add(selectorParams, 'currentModel', modelSelector.availableKeys)
+				.name('Active model')
+				.onChange((value: string) => {
+					modelSelector.onChange(value);
+				});
+
+			modelFolder.open();
+		}
+
+		/**
+		 * ANIMATION (only shown if a mixer + animations are available)
+		 */
+		if (mixer && animations.length > 0) {
+			// Build a name → clip map for the dropdown
+			const clipNames = animations.map((clip, index) => clip.name || `Clip ${index}`);
+			const clipsByName = new Map<string, THREE.AnimationClip>();
+			animations.forEach((clip, index) => {
+				const name = clip.name || `Clip ${index}`;
+				clipsByName.set(name, clip);
+			});
+
+			const animParams = {
+				currentClip: clipNames[0] ?? 'None',
+				timeScale: 1,
+				isPlaying: true,
+				reset: () => {
+					const clip = clipsByName.get(animParams.currentClip);
+					if (!clip) return;
+
+					mixer.stopAllAction();
+					const action = mixer.clipAction(clip);
+					action.reset().play();
+				},
+			};
+
+			const playClipByName = (name: string) => {
+				const clip = clipsByName.get(name);
+				if (!clip) return;
+
+				mixer.stopAllAction();
+				const action = mixer.clipAction(clip);
+				action.reset();
+
+				if (animParams.isPlaying) {
+					action.play();
+				}
+			};
+
+			// Initial apply (play first clip by default)
+			playClipByName(animParams.currentClip);
+
+			const animFolder = gui.addFolder('Animation');
+
+			animFolder
+				.add(animParams, 'currentClip', clipNames)
+				.name('Active clip')
+				.onChange((value: string) => {
+					playClipByName(value);
+				});
+
+			animFolder
+				.add(animParams, 'isPlaying')
+				.name('Play / pause')
+				.onChange((playing: boolean) => {
+					if (playing) {
+						playClipByName(animParams.currentClip);
+					} else {
+						mixer.stopAllAction();
+					}
+				});
+
+			animFolder
+				.add(animParams, 'timeScale', 0.1, 3, 0.05)
+				.name('Time scale')
+				.onChange((value: number) => {
+					mixer.timeScale = value;
+				});
+
+			animFolder.add(animParams, 'reset').name('Reset animation');
+
+			animFolder.open();
+		}
+
+		/**
+		 * TRANSFORM
+		 * Works for both static and animated models.
+		 */
+		const transformFolder = gui.addFolder('Transform');
+
+		transformFolder.add(model.position, 'x', -5, 5, 0.01).name('Pos X');
+		transformFolder.add(model.position, 'y', 0, 5, 0.01).name('Pos Y');
+		transformFolder.add(model.position, 'z', -5, 5, 0.01).name('Pos Z');
+
+		transformFolder.add(model.rotation, 'y', -Math.PI, Math.PI, 0.01).name('Rot Y');
+
+		const transformParams = {
+			scale: model.scale.x,
+		};
+
+		transformFolder
+			.add(transformParams, 'scale', 0.01, 5, 0.01)
+			.name('Uniform scale')
+			.onChange((value: number) => {
+				model.scale.set(value, value, value);
+			});
+
+		transformFolder.open();
+
+		return gui;
+	}
+
 }

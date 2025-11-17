@@ -105,6 +105,10 @@ export const routes: Routes = [
 				path: 'physics',
 				loadComponent: () => import('./pages/physics/physics').then((m) => m.Physics),
 			},
+			{
+				path: 'imported-models',
+				loadComponent: () => import('./pages/imported-models/imported-models').then((m) => m.ImportedModels),
+			}
 		],
 	},
 
