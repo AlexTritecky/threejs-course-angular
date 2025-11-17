@@ -1929,4 +1929,114 @@ export class DebugGuiService {
 
 		return gui;
 	}
+
+
+	createRealisticRenderGui(
+		scene: THREE.Scene,
+		renderer: THREE.WebGLRenderer,
+		light: THREE.DirectionalLight,
+		shadowHelper?: THREE.CameraHelper,
+	): GUI {
+		const sceneAny = scene as any;
+
+		if (sceneAny.environmentIntensity === undefined) {
+			sceneAny.environmentIntensity = 1;
+		}
+
+		const gui = new GUI({
+			width: 340,
+			title: 'Realistic render debug',
+			closeFolders: false,
+		});
+
+		/**
+		 * Environment intensity (HDR env map впливає на освітлення моделі)
+		 */
+		const envFolder = gui.addFolder('Environment');
+		envFolder
+			.add(sceneAny, 'environmentIntensity', 0, 10, 0.001)
+			.name('Env intensity');
+		envFolder.open();
+
+		/**
+		 * Directional light – положення + інтенсивність
+		 */
+		const lightFolder = gui.addFolder('Directional light');
+
+		lightFolder
+			.add(light, 'intensity', 0, 10, 0.001)
+			.name('Intensity');
+
+		lightFolder
+			.add(light.position, 'x', -10, 10, 0.001)
+			.name('Pos X');
+		lightFolder
+			.add(light.position, 'y', -10, 10, 0.001)
+			.name('Pos Y');
+		lightFolder
+			.add(light.position, 'z', -10, 10, 0.001)
+			.name('Pos Z');
+
+		lightFolder.close();
+
+		/**
+		 * Shadows
+		 */
+		const shadowFolder = gui.addFolder('Shadows');
+
+		shadowFolder
+			.add(renderer.shadowMap, 'enabled')
+			.name('Renderer shadows');
+
+		const shadowTypeOptions = {
+			Basic: THREE.BasicShadowMap,
+			PCF: THREE.PCFShadowMap,
+			PCFSoft: THREE.PCFSoftShadowMap,
+		};
+		shadowFolder
+			.add(renderer.shadowMap, 'type', shadowTypeOptions)
+			.name('Shadow type');
+
+		shadowFolder.add(light, 'castShadow').name('Light castShadow');
+
+		shadowFolder
+			.add(light.shadow, 'normalBias', -0.05, 0.05, 0.001)
+			.name('Normal bias');
+		shadowFolder
+			.add(light.shadow, 'bias', -0.05, 0.05, 0.001)
+			.name('Bias');
+
+		if (shadowHelper) {
+			shadowFolder
+				.add(shadowHelper, 'visible')
+				.name('Show shadow camera');
+		}
+
+		shadowFolder.close();
+
+		/**
+		 * Renderer
+		 */
+		const rendererFolder = gui.addFolder('Renderer / Tone mapping');
+
+		const toneMappingOptions = {
+			No: THREE.NoToneMapping,
+			Linear: THREE.LinearToneMapping,
+			Reinhard: THREE.ReinhardToneMapping,
+			Cineon: THREE.CineonToneMapping,
+			ACESFilmic: THREE.ACESFilmicToneMapping,
+		};
+
+		rendererFolder
+			.add(renderer, 'toneMapping', toneMappingOptions)
+			.name('Tone mapping');
+
+		rendererFolder
+			.add(renderer, 'toneMappingExposure', 0, 10, 0.001)
+			.name('Exposure');
+
+		rendererFolder.open();
+
+		return gui;
+	}
 }

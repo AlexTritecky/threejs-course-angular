@@ -120,6 +120,10 @@ export const routes: Routes = [
 			{
 				path: 'environment-map',
 				loadComponent: () => import('./pages/environment-map/environment-map').then((m) => m.EnvironmentMap),
+			},
+			{
+				path: 'realistic-render',
+				loadComponent: () => import('./pages/realistic-render/realistic-render').then((m) => m.RealisticRender),
 			}
 		],
 	},
