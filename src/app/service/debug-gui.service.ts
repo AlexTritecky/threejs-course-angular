@@ -573,15 +573,16 @@ export class DebugGuiService {
 	}
 
 	/**
-	 * Створює GUI для роботи з 3D-текстом:
-	 * - зміна контенту тексту
-	 * - розмір / глибина / bevel
-	 * - кількість "donuts"
-	 * - автоспін групи з текстом
+	 * Creates a GUI for controlling the 3D text:
+	 * - editing the text content
+	 * - adjusting size / depth / bevel
+	 * - changing the number of “donuts”
+	 * - toggling auto-spin for the text group
 	 *
-	 * @param textConfig – обʼєкт з поточними параметрами тексту й анімації
-	 * @param rebuildCallback – колбек, який має заново побудувати text + donuts
+	 * @param textConfig – an object containing the current text and animation parameters
+	 * @param rebuildCallback – a callback that rebuilds the text and donuts
 	 */
+
 	createTextGui(
 		textConfig: {
 			content: string;
@@ -667,6 +668,18 @@ export class DebugGuiService {
 
 		return gui;
 	}
+
+	/**
+	 * Creates a dedicated GUI panel for configuring all scene lights:
+	 * - adjust colors, intensities, and positions for each light type
+	 * - fine-tune directional, hemisphere, point, rect-area, and spotlight settings
+	 * - control spotlight parameters: angle, distance, penumbra, decay, and target
+	 * - auto-update corresponding light helpers on parameter change
+	 * - toggle visibility of all light helpers for debugging
+	 *
+	 * @param lights – a collection of all scene light instances and their helper objects
+	 * @returns GUI – the initialized lights debugging interface
+	 */
 
 	createLightsGui(lights: {
 		ambientLight: THREE.AmbientLight;
@@ -801,6 +814,17 @@ export class DebugGuiService {
 		return gui;
 	}
 
+	/**
+	 * Creates a GUI panel for inspecting and debugging scene shadows:
+	 * - control ambient and directional light intensity and positions
+	 * - adjust material properties affecting shadow appearance (metalness / roughness)
+	 * - switch between fake blob shadows and real shadow maps
+	 * - toggle shadow casting and receiving for sphere, plane, and lights
+	 * - enable visibility of shadow-camera helpers for directional, spot, and point lights
+	 *
+	 * @param params – collection of renderer, lights, helpers, materials, and meshes involved in shadow rendering
+	 * @returns GUI – the initialized debugging interface for shadow controls
+	 */
 	createShadowsGui(params: {
 		renderer: THREE.WebGLRenderer;
 		ambientLight: THREE.AmbientLight;
@@ -918,6 +942,15 @@ export class DebugGuiService {
 		return gui;
 	}
 
+	/**
+	 * Creates a GUI panel for debugging the Haunted House scene:
+	 * - adjust ambient and directional light intensity and position
+	 * - fine-tune floor displacement settings (scale and bias)
+	 * - provides grouped folders for clean organization of lighting and material controls
+	 *
+	 * @param config – collection of scene elements used for lighting and floor material adjustments
+	 * @returns GUI – the initialized debugging interface for Haunted House parameters
+	 */
 	createHauntedHouseGui(config: {
 		ambientLight: THREE.AmbientLight;
 		directionalLight: THREE.DirectionalLight;
@@ -959,15 +992,17 @@ export class DebugGuiService {
 	}
 
 	/**
-	 * GUI для партиклів:
-	 * - колір (material.color)
-	 * - розмір (material.size)
+	 * Creates a GUI panel for configuring particle system parameters:
+	 * - modify particle color and size with live material updates
+	 * - change particle count and trigger full geometry rebuild
+	 * - switch between multiple demo modes (random, sphere, additive, vertex colors, rotation, waves)
+	 * - ensures controlled updates via a callback when mode or count changes
 	 *
-	 * @param material - PointsMaterial партиклів
-	 * @param config - обʼєкт параметрів, які буде змінювати GUI
+	 * @param material – the PointsMaterial instance used by the particle system
+	 * @param config – current particle settings (color, size, count, mode)
+	 * @param onModeOrCountChange – callback invoked when geometry must be regenerated
+	 * @returns GUI – the initialized debugging interface for particle effects
 	 */
-	// DebugGuiService
-
 	createParticlesGui(
 		material: THREE.PointsMaterial,
 		config: {
@@ -1038,6 +1073,18 @@ export class DebugGuiService {
 		return gui;
 	}
 
+	/**
+	 * Creates a GUI panel for generating and tweaking a procedural galaxy:
+	 * - adjust star count, star size, and galaxy radius
+	 * - control spiral structure: number of arms, spin direction, and spin strength
+	 * - fine-tune randomness behavior and distribution power
+	 * - customize color gradient between core and outer regions
+	 * - triggers a full galaxy rebuild when any parameter with structural impact changes
+	 *
+	 * @param params – configuration object describing galaxy generation settings
+	 * @param onUpdate – callback invoked whenever galaxy geometry or attributes must be regenerated
+	 * @returns GUI – the initialized debugging interface for galaxy parameters
+	 */
 	createGalaxyGui(
 		params: {
 			count: number;
@@ -1113,6 +1160,17 @@ export class DebugGuiService {
 		return gui;
 	}
 
+	/**
+	 * Creates a GUI panel for styling the scroll-animation background:
+	 * - adjust global accent color applied to both mesh and particle materials
+	 * - control particle size with real-time material updates
+	 * - groups visual parameters into a clean “Look & feel” section
+	 *
+	 * @param material – toon material used for the main scroll-animation mesh
+	 * @param particlesMaterial – PointsMaterial used for background particles
+	 * @param params – current UI-editable settings (accent color, particle size)
+	 * @returns GUI – the initialized debugging interface for scroll-animation visuals
+	 */
 	createScrollAnimationGui(
 		material: THREE.MeshToonMaterial,
 		particlesMaterial: THREE.PointsMaterial,
@@ -1149,6 +1207,16 @@ export class DebugGuiService {
 		return gui;
 	}
 
+	/**
+	 * Creates a GUI panel for real-time physics debugging:
+	 * - trigger physics actions: spawn spheres, spawn boxes, reset the simulation
+	 * - adjust world parameters such as gravity with instant updates
+	 * - control contact material properties (friction and restitution)
+	 * - organizes controls into clear action, world, and material sections
+	 *
+	 * @param config – physics configuration containing the world, contact material, and action callbacks
+	 * @returns GUI – the initialized debugging interface for physics simulation parameters
+	 */
 	createPhysicsGui(config: {
 		world: CANNON.World;
 		contactMaterial: CANNON.ContactMaterial;
