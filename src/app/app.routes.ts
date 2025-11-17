@@ -113,6 +113,10 @@ export const routes: Routes = [
 				path: 'raycaster',
 				loadComponent: () => import('./pages/raycaster/raycaster').then((m) => m.Raycaster),
 			},
+			{
+				path: 'blender-models',
+				loadComponent: () => import('./pages/blender-models/blender-models').then((m) => m.BlenderModels),
+			}
 		],
 	},
 

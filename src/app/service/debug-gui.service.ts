@@ -1726,4 +1726,82 @@ export class DebugGuiService {
 
 
 
+	createBlenderModelsGui(config: {
+		floorMaterial: THREE.MeshStandardMaterial;
+		ambientLight: THREE.AmbientLight;
+		directionalLight: THREE.DirectionalLight;
+	}): GUI {
+		const gui = new GUI({
+			width: 320,
+			title: 'Blender models debug',
+			closeFolders: false,
+		});
+
+		/**
+		 * Floor material
+		 */
+		const floorFolder = gui.addFolder('Floor');
+		floorFolder.addColor(
+			{ color: `#${config.floorMaterial.color.getHexString()}` },
+			'color',
+		)
+			.name('Color')
+			.onChange((value: string) => {
+				config.floorMaterial.color.set(value);
+			});
+
+		floorFolder
+			.add(config.floorMaterial, 'metalness', 0, 1, 0.01)
+			.name('Metalness');
+
+		floorFolder
+			.add(config.floorMaterial, 'roughness', 0, 1, 0.01)
+			.name('Roughness');
+
+		floorFolder.open();
+
+		/**
+		 * Ambient light
+		 */
+		const ambientFolder = gui.addFolder('Ambient light');
+
+		ambientFolder
+			.add(config.ambientLight, 'intensity', 0, 5, 0.1)
+			.name('Intensity');
+
+		ambientFolder
+			.addColor(
+				{ color: `#${config.ambientLight.color.getHexString()}` },
+				'color',
+			)
+			.name('Color')
+			.onChange((value: string) => {
+				config.ambientLight.color.set(value);
+			});
+
+		ambientFolder.open();
+
+		/**
+		 * Directional light
+		 */
+		const dirFolder = gui.addFolder('Directional light');
+
+		dirFolder
+			.add(config.directionalLight, 'intensity', 0, 5, 0.1)
+			.name('Intensity');
+
+		dirFolder
+			.add(config.directionalLight.position, 'x', -10, 10, 0.1)
+			.name('Pos X');
+		dirFolder
+			.add(config.directionalLight.position, 'y', -10, 10, 0.1)
+			.name('Pos Y');
+		dirFolder
+			.add(config.directionalLight.position, 'z', -10, 10, 0.1)
+			.name('Pos Z');
+
+		dirFolder.open();
+
+		return gui;
+	}
 }
